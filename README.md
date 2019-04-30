@@ -9,7 +9,7 @@
 - [ ] buscarLibro() se tendria que separar en varias funciones:
   - [x] buscarLibroPorTitutlo()
   - [x] buscarLibroPorAutorNombre()
-  - [ ] buscarLibroPorAutorApellido()
+  - [x] buscarLibroPorAutorApellido()
 - [ ] hacer que funque en linux?
   - [ ] no usar:
     - [ ] fflush()
