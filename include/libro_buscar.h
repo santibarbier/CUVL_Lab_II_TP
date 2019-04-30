@@ -5,5 +5,6 @@
 
 void buscarLibroPorTitulo();
 void buscarLibroPorNombreDeAutor();
+void buscarLibroPorApellidoDeAutor();
 
 #endif // LIBRO_BUSCAR_H_
