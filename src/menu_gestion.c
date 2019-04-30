@@ -14,8 +14,9 @@ void showGestionMenu()
 	printLineWithText("        2 - LISTAR");
 	printLineWithText("        3 - BUSCAR POR TITULO");
 	printLineWithText("        4 - BUSCAR POR NOMBRE DE AUTOR");
-	printLineWithText("        5 - EDITAR ");
-	printLineWithText("        6 - ELIMINAR ");
+	printLineWithText("        5 - BUSCAR POR APELLIDO DE AUTOR");
+	printLineWithText("        6 - EDITAR ");
+	printLineWithText("        7 - ELIMINAR ");
 	printLineWithText("        0 - Volver");
     printf("\nIngrese opcion: ");
 }
@@ -41,6 +42,10 @@ void gestionMenu()
                 break;
             case GES_BUSCAR_NOMBRE:
                 buscarLibroPorNombreDeAutor();
+                pressAnyKeyToContinue("");
+                break;
+	    case GES_BUSCAR_APELLIDO:
+                buscarLibroPorApellidoDeAutor();
                 pressAnyKeyToContinue("");
                 break;
             case GES_EDITAR:
