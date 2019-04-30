@@ -6,7 +6,7 @@
 - [x] usar strstr en busqueda de libros
 - [ ] usar strncpy en inicializacion de libros
 - [ ] **FIX:** la busqueda de libros es case-sensitive
-- [ ] buscarLibro() se tendria que separar en varias funciones:
+- [x] buscarLibro() se tendria que separar en varias funciones:
   - [x] buscarLibroPorTitutlo()
   - [x] buscarLibroPorAutorNombre()
   - [x] buscarLibroPorAutorApellido()
