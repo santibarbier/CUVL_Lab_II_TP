@@ -1,2 +1,22 @@
-# CUVL_Lab_II_TP
-Libreria para el T.P.
+# TODO:
+- [ ] pulido de menues:
+  - [ ] limpiar pantalla cada vez que se selecciona una opcion dentro de un submenu
+  - [x] imprimir cuando no se encuentra un libro
+  - [ ] submenu para buscar
+- [x] usar strstr en busqueda de libros
+- [ ] usar strncpy en inicializacion de libros
+- [ ] **FIX:** la busqueda de libros es case-sensitive
+- [ ] buscarLibro() se tendria que separar en varias funciones:
+  - [x] buscarLibroPorTitutlo()
+  - [x] buscarLibroPorAutorNombre()
+  - [ ] buscarLibroPorAutorApellido()
+- [ ] hacer que funque en linux?
+  - [ ] no usar:
+    - [ ] fflush()
+    - [ ] getch()
+- [ ] ayuda,h
+  - [ ] limpiarPantalla()
+  - [ ] saltoDeLinea()
+  - [ ] indentar()
+  - [ ] tomarCaracter()
+  - [ ] tomarEntero()`{ return tomarCaracter() - '0'; }`	
