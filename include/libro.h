@@ -1,7 +1,6 @@
 #ifndef ALTA_LIBRO_H_
 #define ALTA_LIBRO_H_
 
-
 typedef struct ST_AUTOR
 {
     char nombre[20];
@@ -23,4 +22,5 @@ void iniciarLibro( ST_LIBRO *Libro, const char *titulo, const char *nombreAutor,
 void nuevoLibro();
 void listarLibros();
 void imprimirLibro(long pos);
+void eliminarLibro(long pos);
 #endif // ALTA_LIBRO_H_

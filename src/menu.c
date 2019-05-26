@@ -10,6 +10,7 @@
 #define OS_WINDOWS 1
 
 #define OS OS_WINDOWS
+//#define OS OS_LINUX
 
 #if OS == OS_LINUX
 #include <unistd.h>   //_getch

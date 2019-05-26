@@ -78,3 +78,38 @@ void buscarLibroPorNombreDeAutor()
 
     fclose(pArchivo);
 }
+
+void buscarLibroPorApellidoDeAutor()
+{
+    FILE *pArchivo = abrirArchivoLibros("rb");
+    ST_LIBRO * Libro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
+
+    printf("\nBUSCAR: ");
+    char buscar[50];
+    fflush(stdin);
+    gets(buscar);
+
+    bool encontrado = false;
+    char *busqueda = NULL;
+    long pos;
+
+    fread(Libro, sizeof(ST_LIBRO), 1, pArchivo);
+    while (!feof(pArchivo))
+    {
+        busqueda = strstr( Libro->autor.apellido, buscar );
+        if (busqueda != NULL)
+        {
+            encontrado = true;
+            pos = ftell(pArchivo) - sizeof(ST_LIBRO);
+            imprimirLibro(pos);
+        }
+        fread(Libro, sizeof(ST_LIBRO), 1, pArchivo);
+    }
+
+    if (encontrado == false)
+    {
+        mensajeDeBusquedasinResultados();
+    }
+
+    fclose(pArchivo);
+}
