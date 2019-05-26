@@ -135,12 +135,15 @@ void eliminarLibro(long pos)
     {
         if (ftell(pArchivo) != posicion)
         {
-            eliminado = true;
             fwrite(&libro, sizeof(ST_LIBRO), 1, pArchivoAux);
+        }
+        else
+        {
+            eliminado = true;
         }
         fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
     }
-    if (!eliminado)
+    if (eliminado)
     {
         printf("No se pudo eliminar\n");
         pressAnyKeyToContinue();
