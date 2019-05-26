@@ -1,4 +1,5 @@
 # Todo:
+
 - [ ] pulido de menues:
   - [ ] limpiar pantalla cada vez que se selecciona una opcion dentro de un submenu
   - [x] imprimir cuando no se encuentra un libro
@@ -20,26 +21,28 @@
   - [ ] indentar()
   - [ ] tomarCaracter()
   - [ ] tomarEntero()`{ return tomarCaracter() - '0'; }`
-# Eenunciado
+
+# Enunciado
+
 Las tres tareas principales sobre el que se apoya el proceso de venta son:
 
 1. **Gestión libros:** *darlos de alta en el sistema, listarlos, editarlos y eliminarlos.*
-	
-	- Todo:
-	  - [x] Alta
-	  - [x] Listar
-	  - [ ] Editarlos
-	  - [x] Eliminarlos
-	
-	1. [ ] Los artículos creados deben guardarse en un archivo binario; en lo particular, éste deberá mantenerse actualizado cada vez que se realicen tareas de modificación o eliminación sobre los libros.
-	2. [ ] Al momento de listar los libros, es importante que el sistema permita realizar búsquedas a través del ISBN, título y autor; la búsqueda por ISBN debe ser exacta, mientras que en el caso del título y del autor debe admitir la búsqueda parcial del texto.
-	
-	- [ ] Al momento de editar los datos de un libro, el usuario debe poder ver el "antes y el después" como paso previo a la confirmación (o cancelación) de los cambios.
-	
+
+   - Todo:
+     - [x] Alta
+     - [x] Listar
+     - [ ] Editarlos
+     - [x] Eliminarlos
+
+   1. [ ] Los artículos creados deben guardarse en un archivo binario; en lo particular, éste deberá mantenerse actualizado cada vez que se realicen tareas de modificación o eliminación sobre los libros.
+   2. [ ] Al momento de listar los libros, es importante que el sistema permita realizar búsquedas a través del ISBN, título y autor; la búsqueda por ISBN debe ser exacta, mientras que en el caso del título y del autor debe admitir la búsqueda parcial del texto.
+
+   - [ ] Al momento de editar los datos de un libro, el usuario debe poder ver el "antes y el después" como paso previo a la confirmación (o cancelación) de los cambios.
+
 2. **Venta de ejemplares:**  *operador utilizará para informarle al sistema qué libros serán vendidos.*
 
-  1. [ ] 
+3. [ ] 
 
-3. **Entrega de artículos comprados**
+4. **Entrega de artículos comprados**
 
    - [ ] 
