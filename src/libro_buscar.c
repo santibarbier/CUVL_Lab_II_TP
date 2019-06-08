@@ -14,10 +14,14 @@ void buscarLibroPorTitulo()
     FILE *pArchivo = abrirArchivoLibros("rb");
     ST_LIBRO * Libro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
 
-    printf("\nBUSCAR: ");
+    clearScreen();
+
+    printf("\nBUSCAR TITULO: ");
     char buscar[50];
     fflush(stdin);
     gets(buscar);
+
+    librosImprimirCabezeraTabla("RESULTADO DE BUSQUEDA");
 
     bool encontrado = false;
     char *busqueda = NULL;
@@ -26,7 +30,7 @@ void buscarLibroPorTitulo()
     fread(Libro, sizeof(ST_LIBRO), 1, pArchivo);
     while (!feof(pArchivo))
     {
-        busqueda = strstr( Libro->titulo, buscar );
+        busqueda = strstr(strlwr(Libro->titulo), strlwr(buscar));
         if (busqueda != NULL)// if (strcmp(Libro->titulo, buscar) == 0)
         {
             encontrado = true;
@@ -49,10 +53,14 @@ void buscarLibroPorNombreDeAutor()
     FILE *pArchivo = abrirArchivoLibros("rb");
     ST_LIBRO * Libro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
 
-    printf("\nBUSCAR: ");
+    clearScreen();
+
+    printf("\nBUSCAR NOMBRE DE AUTOR: ");
     char buscar[50];
     fflush(stdin);
     gets(buscar);
+
+    librosImprimirCabezeraTabla("RESULTADO DE BUSQUEDA");
 
     bool encontrado = false;
     char *busqueda = NULL;
@@ -61,7 +69,7 @@ void buscarLibroPorNombreDeAutor()
     fread(Libro, sizeof(ST_LIBRO), 1, pArchivo);
     while (!feof(pArchivo))
     {
-        busqueda = strstr( Libro->autor.nombre, buscar );
+        busqueda = strstr(strlwr(Libro->autor.nombre), strlwr(buscar));
         if (busqueda != NULL)// if (strcmp(Libro->autor.nombre, buscar) == 0)
         {
             encontrado = true;
@@ -84,10 +92,14 @@ void buscarLibroPorApellidoDeAutor()
     FILE *pArchivo = abrirArchivoLibros("rb");
     ST_LIBRO * Libro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
 
-    printf("\nBUSCAR: ");
+    clearScreen();
+
+    printf("\nBUSCAR APPELIDO DE AUTOR: ");
     char buscar[50];
     fflush(stdin);
     gets(buscar);
+
+    librosImprimirCabezeraTabla("RESULTADO DE BUSQUEDA");
 
     bool encontrado = false;
     char *busqueda = NULL;
@@ -96,7 +108,7 @@ void buscarLibroPorApellidoDeAutor()
     fread(Libro, sizeof(ST_LIBRO), 1, pArchivo);
     while (!feof(pArchivo))
     {
-        busqueda = strstr( Libro->autor.apellido, buscar );
+        busqueda = strstr(strlwr(Libro->autor.apellido), strlwr(buscar));
         if (busqueda != NULL)
         {
             encontrado = true;

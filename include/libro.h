@@ -22,5 +22,5 @@ void iniciarLibro( ST_LIBRO *Libro, const char *titulo, const char *nombreAutor,
 void nuevoLibro();
 void listarLibros();
 void imprimirLibro(long pos);
-void eliminarLibro(long pos);
+void eliminarLibro();
 #endif // ALTA_LIBRO_H_

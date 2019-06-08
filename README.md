@@ -1,12 +1,13 @@
 # Todo:
 
-- [ ] pulido de menues:
-  - [ ] limpiar pantalla cada vez que se selecciona una opcion dentro de un submenu
+- [ ] no se tendrian que poder meter libros con mismo ISBN
+- [x] pulido de menues:
+  - [x] limpiar pantalla cada vez que se selecciona una opcion dentro de un submenu
   - [x] imprimir cuando no se encuentra un libro
-  - [ ] submenu para buscar
+  - [ ] ~~submenu para buscar~~
 - [x] usar strstr en busqueda de libros
 - [ ] usar strncpy en inicializacion de libros
-- [ ] **FIX:** la busqueda de libros es case-sensitive
+- [x] **FIX:** la busqueda de libros es case-sensitive
 - [x] buscarLibro() se tendria que separar en varias funciones:
   - [x] buscarLibroPorTitutlo()
   - [x] buscarLibroPorAutorNombre()
@@ -26,23 +27,21 @@
 
 Las tres tareas principales sobre el que se apoya el proceso de venta son:
 
-1. **Gestión libros:** *darlos de alta en el sistema, listarlos, editarlos y eliminarlos.*
+1. **Gestión libros:** *darlos de alta en el sistema, listarlos, editarlos y eliminarlos.
+
+   1. Los artículos creados deben guardarse en un archivo binario; en lo particular, éste deberá mantenerse actualizado cada vez que se realicen tareas de modificación o eliminación sobre los libros.
+   2. Al momento de listar los libros, es importante que el sistema permita realizar búsquedas a través del ISBN, título y autor; la búsqueda por ISBN debe ser exacta, mientras que en el caso del título y del autor debe admitir la búsqueda parcial del texto.
+   3. Al momento de editar los datos de un libro, el usuario debe poder ver el "antes y el después" como paso previo a la confirmación (o cancelación) de los cambios.*
 
    - Todo:
      - [x] Alta
      - [x] Listar
      - [ ] Editarlos
-     - [x] Eliminarlos
-
-   1. [ ] Los artículos creados deben guardarse en un archivo binario; en lo particular, éste deberá mantenerse actualizado cada vez que se realicen tareas de modificación o eliminación sobre los libros.
-   2. [ ] Al momento de listar los libros, es importante que el sistema permita realizar búsquedas a través del ISBN, título y autor; la búsqueda por ISBN debe ser exacta, mientras que en el caso del título y del autor debe admitir la búsqueda parcial del texto.
-
-   - [ ] Al momento de editar los datos de un libro, el usuario debe poder ver el "antes y el después" como paso previo a la confirmación (o cancelación) de los cambios.
+     - [x] Eliminarlos por ISBN
+     - [ ] Busqueda (exacta) por ISBN
+     - [x] Busqueda (parcial) por titulo
+     - [x] Busqueda (parcial) por autor
 
 2. **Venta de ejemplares:**  *operador utilizará para informarle al sistema qué libros serán vendidos.*
 
-3. [ ] 
-
-4. **Entrega de artículos comprados**
-
-   - [ ] 
+3. **Entrega de artículos comprados:**

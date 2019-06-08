@@ -4,7 +4,7 @@
 #include "../include/libro.h"
 #include "../include/libro_buscar.h"
 
-void showGestionMenu()
+void gestionMenuImpresionOpciones()
 {
     clearScreen();
 	printHastagLine();
@@ -15,15 +15,16 @@ void showGestionMenu()
 	printLineWithText("        3 - BUSCAR POR TITULO");
 	printLineWithText("        4 - BUSCAR POR NOMBRE DE AUTOR");
 	printLineWithText("        5 - BUSCAR POR APELLIDO DE AUTOR");
-	printLineWithText("        6 - EDITAR ");
-	printLineWithText("        7 - ELIMINAR ");
+	printLineWithText("        6 - BUSCAR POR ISBN");
+	printLineWithText("        7 - EDITAR ");
+	printLineWithText("        8 - ELIMINAR ");
 	printLineWithText("        0 - Volver");
     printf("\nIngrese opcion: ");
 }
 
 void gestionMenu()
 {
-    showGestionMenu();
+    gestionMenuImpresionOpciones();
     enum GESTION_OP opGestion = getOption();
     while(opGestion != GES_END)
     {
@@ -48,21 +49,19 @@ void gestionMenu()
                 buscarLibroPorApellidoDeAutor();
                 pressAnyKeyToContinue("");
                 break;
+	    case GES_BUSCAR_ISBN:
+                buscarLibroPorISBN();
+                break;
             case GES_EDITAR:
-                printOptionWIP();
+                printOptionWIP(); // WIP
             case GES_ELIMINAR:
-                clearScreen();
-                int indice = 0;
-                printf("Ingrese indice del libro que de sea eliminar.\n");
-                printf("- Indice: ");
-                scanf("%i", &indice);
-                eliminarLibro(sizeof(ST_LIBRO) * indice);
+                eliminarLibro();
                 break;
             default:
                 printOptionInvalid();
                 break;
         }
-        showGestionMenu();
+        gestionMenuImpresionOpciones();
         opGestion = getOption();
     }
 }
