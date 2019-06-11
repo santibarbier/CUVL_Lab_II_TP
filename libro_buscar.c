@@ -16,7 +16,7 @@ void buscarLibroPorTitulo()
     FILE *pArchivo = abrirArchivoLibros("rb");
     ST_LIBRO * Libro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
 
-    limpiarPantalla();
+//    limpiarPantalla();
 
     printf("\nBUSCAR TITULO: ");
     char buscar[50];
@@ -55,7 +55,7 @@ void buscarLibroPorNombreDeAutor()
     FILE *pArchivo = abrirArchivoLibros("rb");
     ST_LIBRO * Libro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
 
-    limpiarPantalla();
+//    limpiarPantalla();
 
     printf("\nBUSCAR NOMBRE DE AUTOR: ");
     char buscar[50];

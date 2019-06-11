@@ -177,7 +177,7 @@ ST_LIBRO conseguirLibroEnArchivo(long pos)
 
 void buscarLibroPorISBN()
 {
-    limpiarPantalla();
+//    limpiarPantalla();
     int isbn = 0;
     printf("Buscar libro por ISBN.\n");
     printf("- ISBN: ");

@@ -6,24 +6,27 @@
 
 #include "libro.h"
 
-void _agregarLibro()
+void _nuevoLibro()
 {
     limpiarPantalla();
-    printf("agregarLibro()\n");
+    printf("MENU PRINCIPAL -> GESTION DE LIBROS -> NUEVO\n\n");
+    nuevoLibro();
     presioneUnaTeclaParaContinuar();
 }
 
 void _editarLibro()
 {
     limpiarPantalla();
-    printf("editarLibro()\n");
+    printf("MENU PRINCIPAL -> GESTION DE LIBROS -> EDITAR\n\n");
+    editarLibro();
     presioneUnaTeclaParaContinuar();
 }
 
 void _eliminarLibro()
 {
     limpiarPantalla();
-    printf("eliminarLibro()\n");
+    printf("MENU PRINCIPAL -> GESTION DE LIBROS -> ELIMINAR\n\n");
+    eliminarLibro();
     presioneUnaTeclaParaContinuar();
 }
 
@@ -39,7 +42,7 @@ void menuGestion()
 {
     Menu menus[] =
     {
-        Menu_crear("Agregar", &_agregarLibro),
+        Menu_crear("Nuevo", &_nuevoLibro),
         Menu_crear("Editar", &_editarLibro),
         Menu_crear("Eliminar", &_eliminarLibro),
         Menu_crear("Listar", &_listarLibros),
