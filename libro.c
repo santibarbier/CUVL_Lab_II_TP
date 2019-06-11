@@ -2,15 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "../include/libro.h"
-#include "../include/menu.h"
+#include "libro.h"
+#include "ayuda.h"
 
-#define ARCHIVO "libros.dat"
-#define ARCHIVOAUX "libros_aux.dat"
+#define ARCHIVO "_libros.dat"
+#define ARCHIVOAUX "_libros_aux.dat"
 
 void librosImprimirCabezeraTabla(const char* tituloTabla)
 {
-    printf("\t\t\t\t\t%s\n\n", tituloTabla);
+//    printf("\t\t\t\t\t%s\n\n", tituloTabla);
+    printf("\t\t\t\t\t%s\n", tituloTabla);
     printf("%20s\t", "TITULO");
     printf("%15s\t", "AUTOR");
     printf("%15s\t", "APELLIDO");
@@ -18,7 +19,8 @@ void librosImprimirCabezeraTabla(const char* tituloTabla)
     printf("%9s\t", "ISBN");
     printf("%s\t", "STOCK");
     printf("%s\t", "RESERVADO");
-    printf("\n\n");
+//    printf("\n\n");
+    printf("\n=========================================================================================================\n");
 }
 
 void iniciarLibro( ST_LIBRO *Libro, const char *titulo, const char *nombreAutor, const char *apellidoAutor, double precio,int isbn, int stockDisponible, int stockReservado)
@@ -74,12 +76,13 @@ void nuevoLibro()
 
 void listarLibros()
 {
-    clearScreen();
+//    limpiarPantalla();
     FILE *pArchivo = abrirArchivoLibros("rb");
     ST_LIBRO * pLibro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
     fread(pLibro, sizeof(ST_LIBRO), 1, pArchivo);
 
-    librosImprimirCabezeraTabla("LISTADO DE LIBROS");
+//    librosImprimirCabezeraTabla("LISTADO DE LIBROS");
+    librosImprimirCabezeraTabla("");
 
     long pos;
     while(!feof(pArchivo))
@@ -174,7 +177,7 @@ ST_LIBRO conseguirLibroEnArchivo(long pos)
 
 void buscarLibroPorISBN()
 {
-    clearScreen();
+    limpiarPantalla();
     int isbn = 0;
     printf("Buscar libro por ISBN.\n");
     printf("- ISBN: ");
@@ -186,18 +189,18 @@ void buscarLibroPorISBN()
         if (libro.isbn != isbn)
         {
             printf("No se encontre el libro con ISBN: %i\n", isbn);
-            pressAnyKeyToContinue();
+            presioneUnaTeclaParaContinuar();
         }
         else
         {
             imprimirLibroEnVariasLineas(pos);
-            pressAnyKeyToContinue("");
+            presioneUnaTeclaParaContinuar("");
         }
     }
     else
     {
         printf("No se encontre el libro con ISBN: %i\n", isbn);
-        pressAnyKeyToContinue();
+        presioneUnaTeclaParaContinuar();
     }
 }
 
@@ -227,27 +230,27 @@ void eliminarLibroEnArchivo(long pos)
     if (eliminado)
     {
         printf("Libro eliminado\n");
-        pressAnyKeyToContinue();
+        presioneUnaTeclaParaContinuar();
     }
     else
     {
         printf("No se pudo eliminar\n");
-        pressAnyKeyToContinue();
+        presioneUnaTeclaParaContinuar();
     }
     fclose(pArchivo);
     fclose(pArchivoAux);
     if (remove(ARCHIVO) != 0)
     {
-        clearScreen();
+        limpiarPantalla();
         printf("Hubo un error al tratar de eliminar el archivo: %s\n", ARCHIVO);
-        pressAnyKeyToContinue();
+        presioneUnaTeclaParaContinuar();
     }
     rename(ARCHIVOAUX, ARCHIVO);
 }
 
 void eliminarLibro()
 {
-    clearScreen();
+    limpiarPantalla();
     int isbn = 0;
     printf("Ingrese ISBN del libro que de sea eliminar.\n");
     printf("- ISBN: ");
@@ -269,7 +272,7 @@ void eliminarLibro()
         if (libro.isbn != isbn)
         {
             printf("No se pudo eliminar el libro. No hay libro con el ISBN: %i\n", isbn);
-            pressAnyKeyToContinue();
+            presioneUnaTeclaParaContinuar();
         }
         else
         {
@@ -280,7 +283,7 @@ void eliminarLibro()
     else
     {
         printf("No se pudo eliminar el libro. No hay libro con el ISBN: %i\n", isbn);
-        pressAnyKeyToContinue();
+        presioneUnaTeclaParaContinuar();
     }
 }
 
@@ -345,12 +348,12 @@ void _editarLibroEnPantalla(long pos)
     fwrite(&libro, sizeof(ST_LIBRO), 1, pArchivo);
     fclose(pArchivo);
 
-    pressAnyKeyToContinue("");
+    presioneUnaTeclaParaContinuar("");
 }
 
 void editarLibro()
 {
-    clearScreen();
+    limpiarPantalla();
     int isbn = 0;
     printf("EDICION DE LIBRO.\n");
     printf("Buscar libro por ISBN.\n");
@@ -363,7 +366,7 @@ void editarLibro()
         if (libro.isbn != isbn)
         {
             printf("No se encontre el libro con ISBN: %i\n", isbn);
-            pressAnyKeyToContinue();
+            presioneUnaTeclaParaContinuar();
         }
         else
         {
@@ -373,6 +376,6 @@ void editarLibro()
     else
     {
         printf("No se encontre el libro con ISBN: %i\n", isbn);
-        pressAnyKeyToContinue();
+        presioneUnaTeclaParaContinuar();
     }
 }

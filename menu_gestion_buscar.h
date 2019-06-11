@@ -1,0 +1,6 @@
+#ifndef MENU_GESTION_BUSCAR_H_INCLUDED
+#define MENU_GESTION_BUSCAR_H_INCLUDED
+
+void menuGestionBuscar();
+
+#endif // MENU_GESTION_BUSCAR_H_INCLUDED

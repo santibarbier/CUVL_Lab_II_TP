@@ -24,4 +24,6 @@ void listarLibros();
 void imprimirLibro(long pos);
 void eliminarLibro();
 void editarLibro();
+
+void librosImprimirCabezeraTabla(const char* tituloTabla);
 #endif // ALTA_LIBRO_H_

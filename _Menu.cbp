@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="LabII-TP" />
+		<Option title="Menu" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/SistOpII" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/test" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -16,7 +16,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/SistOpII" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/test" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -31,42 +31,49 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="include/libro.h" />
-		<Unit filename="include/libro_buscar.h" />
-		<Unit filename="include/menu.h" />
-		<Unit filename="include/menu_entregas.h" />
-		<Unit filename="include/menu_gestion.h" />
-		<Unit filename="include/menu_principal.h" />
-		<Unit filename="include/menu_ventas.h" />
+		<Unit filename="ayuda.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ayuda.h" />
+		<Unit filename="libro.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libro.h" />
+		<Unit filename="libro_buscar.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libro_buscar.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/libro.c">
+		<Unit filename="menu.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/libro_buscar.c">
+		<Unit filename="menu.h" />
+		<Unit filename="menu_entregas.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/menu.c">
+		<Unit filename="menu_entregas.h" />
+		<Unit filename="menu_gestion.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/menu_entregas.c">
+		<Unit filename="menu_gestion.h" />
+		<Unit filename="menu_gestion_buscar.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/menu_gestion.c">
+		<Unit filename="menu_gestion_buscar.h" />
+		<Unit filename="menu_principal.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/menu_principal.c">
+		<Unit filename="menu_principal.h" />
+		<Unit filename="menu_ventas.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/menu_ventas.c">
-			<Option compilerVar="CC" />
-		</Unit>
+		<Unit filename="menu_ventas.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
-			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

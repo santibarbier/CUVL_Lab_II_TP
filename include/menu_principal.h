@@ -1,7 +1,0 @@
-#ifndef MENU_PRINCIPAL_H_
-#define MENU_PRINCIPAL_H_
-
-typedef enum PRINCIPAL_OP {PRIN_END, PRIN_GESTION, PRIN_VENTAS, PRIN_ENTREGA} PRINCIPAL_OP;
-void startMenuLoop();
-
-#endif // MENU_PRINCIPAL_H_

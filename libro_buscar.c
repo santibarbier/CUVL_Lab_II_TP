@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../include/libro_buscar.h"
+#include "libro.h"
+#include "libro_buscar.h"
+#include "ayuda.h"
 
 void mensajeDeBusquedasinResultados()
 {
@@ -14,7 +16,7 @@ void buscarLibroPorTitulo()
     FILE *pArchivo = abrirArchivoLibros("rb");
     ST_LIBRO * Libro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
 
-    clearScreen();
+    limpiarPantalla();
 
     printf("\nBUSCAR TITULO: ");
     char buscar[50];
@@ -53,7 +55,7 @@ void buscarLibroPorNombreDeAutor()
     FILE *pArchivo = abrirArchivoLibros("rb");
     ST_LIBRO * Libro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
 
-    clearScreen();
+    limpiarPantalla();
 
     printf("\nBUSCAR NOMBRE DE AUTOR: ");
     char buscar[50];
@@ -92,7 +94,7 @@ void buscarLibroPorApellidoDeAutor()
     FILE *pArchivo = abrirArchivoLibros("rb");
     ST_LIBRO * Libro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
 
-    clearScreen();
+    limpiarPantalla();
 
     printf("\nBUSCAR APPELIDO DE AUTOR: ");
     char buscar[50];
