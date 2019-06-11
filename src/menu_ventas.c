@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "../include/menu.h"
 #include "../include/menu_ventas.h"
+#include "../include/libro.h"
+#include "../include/libro_buscar.h"
 
 void showVentasMenu()
 {
@@ -9,34 +11,40 @@ void showVentasMenu()
 	printLineWithText("    VENTA DE EJEMPLARES");
 	printLineWithText("");
 	printLineWithText("        1 - LISTAR");
-	printLineWithText("        2 - BUSCAR ISBN");
-	printLineWithText("        3 - BUSCAR TITULO ");
-	printLineWithText("        4 - BUSCAR AUTOR ");
+	printLineWithText("        2 - BUSCAR POR TITULO");
+	printLineWithText("        3 - BUSCAR POR NOMBRE DE AUTOR");
+	printLineWithText("        4 - BUSCAR POR APELLIDO DE AUTOR");
+	printLineWithText("        5 - BUSCAR POR ISBN");
 	printLineWithText("        0 - Volver");
     printf("\nIngrese opcion: ");
-}
-
-enum VENTAS_ERRORS validVentasOption(enum VENTAS_OP option)
-{
-	if(option < LISTAR || option > BUSCAR_AUTOR)
-		return ERR_INVALID_VENTAS;
-	else
-		return ERR_VENTAS_OK;
 }
 
 void ventasMenu()
 {
     showVentasMenu();
     enum VENTAS_OP opVentas = getOption();
-    while(opVentas != END_VENTAS)
+    while(opVentas != VENTAS_END)
     {
         switch ( opVentas )
         {
-            case LISTAR:
-            case BUSCAR_ISBN:
-            case BUSCAR_TITULO:
-            case BUSCAR_AUTOR:
-                printOptionWIP();
+            case VENTAS_LISTAR:
+                listarLibros();
+                pressAnyKeyToContinue("");
+                break;
+            case VENTAS_BUSCAR_TITULO:
+                buscarLibroPorTitulo();
+                pressAnyKeyToContinue("");
+                break;
+            case VENTAS_BUSCAR_AUTOR_NOMBRE:
+                buscarLibroPorNombreDeAutor();
+                pressAnyKeyToContinue("");
+                break;
+            case VENTAS_BUSCAR_AUTOR_APELLIDO:
+                buscarLibroPorApellidoDeAutor();
+                pressAnyKeyToContinue("");
+                break;
+            case VENTAS_BUSCAR_ISBN:
+                buscarLibroPorISBN();
                 break;
             default:
                 printOptionInvalid();

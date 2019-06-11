@@ -143,7 +143,7 @@ void imprimirLibroEnVariasLineas(long pos)
     fclose(pArchivo);
 }
 
-long conseguirPosicionDeLibroEnArchivo(int isbn)
+long conseguirPosicionDeLibroEnArchivoPorISBN(int isbn)
 {
     FILE* pArchivo = abrirArchivoLibros("rb");
     long pos = 0;
@@ -179,7 +179,7 @@ void buscarLibroPorISBN()
     printf("Buscar libro por ISBN.\n");
     printf("- ISBN: ");
     scanf("%i", &isbn);
-    long pos = conseguirPosicionDeLibroEnArchivo(isbn);
+    long pos = conseguirPosicionDeLibroEnArchivoPorISBN(isbn);
     if (pos >= 0)
     {
         ST_LIBRO libro = conseguirLibroEnArchivo(pos);
@@ -214,13 +214,13 @@ void eliminarLibroEnArchivo(long pos)
     while (!feof(pArchivo))
     {
         long cur = ftell(pArchivo) - sizeof(ST_LIBRO);
-        if (cur == pos)
+        if (cur != pos)
         {
-            eliminado = true;
+            fwrite(&libro, sizeof(ST_LIBRO), 1, pArchivoAux);
         }
         else
         {
-            fwrite(&libro, sizeof(ST_LIBRO), 1, pArchivoAux);
+            eliminado = true;
         }
         fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
     }
@@ -262,7 +262,7 @@ void eliminarLibro()
 //        pos = ftell(pArchivo) - sizeof(ST_LIBRO);
 //    }
 //    if (libro.isbn != isbn)
-    long pos = conseguirPosicionDeLibroEnArchivo(isbn);
+    long pos = conseguirPosicionDeLibroEnArchivoPorISBN(isbn);
     if (pos >= 0)
     {
         ST_LIBRO libro = conseguirLibroEnArchivo(pos);
@@ -280,6 +280,99 @@ void eliminarLibro()
     else
     {
         printf("No se pudo eliminar el libro. No hay libro con el ISBN: %i\n", isbn);
+        pressAnyKeyToContinue();
+    }
+}
+
+void _editarLibroEnPantalla(long pos)
+{
+    ST_LIBRO libro = conseguirLibroEnArchivo(pos);
+
+    imprimirLibroEnVariasLineas(pos);
+
+    // EDITAR LIBRO
+    ST_LIBRO libroAux;
+    printf("\nEDITANDO LIBRO\n");
+    printf("\t- Apriete enter para no editar strings\n");
+    printf("\t- Ingrese -1 para no editar numeros\n");
+    printf("\n\n");
+    fflush(stdin);
+
+    printf("TITULO: ");
+    gets(libroAux.titulo);
+    if (libroAux.titulo[0] != '\0') // Si string no esta vacio
+    {
+        strcpy(libro.titulo, libroAux.titulo);
+    }
+
+    printf("NOMBRE AUTOR: ");
+    gets(libroAux.autor.nombre);
+    if (libroAux.autor.nombre[0] != '\0') // Si string no esta vacio
+    {
+        strcpy(libro.autor.nombre, libroAux.autor.nombre);
+    }
+
+    printf("APELLIDO AUTOR: ");
+    gets(libroAux.autor.apellido);
+    if (libroAux.autor.apellido[0] != '\0') // Si string no esta vacio
+    {
+        strcpy(libro.autor.apellido, libroAux.autor.apellido);
+    }
+
+    printf("PRECIO: ");
+    scanf("%lf", &libroAux.precio);
+    if (libroAux.precio >= 0)
+    {
+        libro.precio = libroAux.precio;
+    }
+
+    printf("ISBN: ");
+    scanf("%i", &libroAux.isbn);
+    if (libroAux.isbn >= 0)
+    {
+        libro.isbn = libroAux.isbn;
+    }
+
+    printf("STOCK DISPONIBLE: ");
+    scanf("%i", &libroAux.stockDisponible);
+    if (libroAux.stockDisponible >= 0)
+    {
+        libro.stockDisponible = libroAux.stockDisponible;
+    }
+
+    FILE* pArchivo = abrirArchivoLibros("rb+");
+    fseek(pArchivo, pos, SEEK_SET);
+    fwrite(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+    fclose(pArchivo);
+
+    pressAnyKeyToContinue("");
+}
+
+void editarLibro()
+{
+    clearScreen();
+    int isbn = 0;
+    printf("EDICION DE LIBRO.\n");
+    printf("Buscar libro por ISBN.\n");
+    printf("- ISBN: ");
+    scanf("%i", &isbn);
+    long pos = conseguirPosicionDeLibroEnArchivoPorISBN(isbn);
+    if (pos >= 0)
+    {
+        ST_LIBRO libro = conseguirLibroEnArchivo(pos);
+        if (libro.isbn != isbn)
+        {
+            printf("No se encontre el libro con ISBN: %i\n", isbn);
+            pressAnyKeyToContinue();
+        }
+        else
+        {
+            _editarLibroEnPantalla(pos);
+        }
+    }
+    else
+    {
+        printf("No se encontre el libro con ISBN: %i\n", isbn);
         pressAnyKeyToContinue();
     }
 }

@@ -1,5 +1,5 @@
 # Todo:
-
+- [ ] antes y despues de editado
 - [ ] no se tendrian que poder meter libros con mismo ISBN
 - [x] pulido de menues:
   - [x] limpiar pantalla cada vez que se selecciona una opcion dentro de un submenu
@@ -36,9 +36,9 @@ Las tres tareas principales sobre el que se apoya el proceso de venta son:
    - Todo:
      - [x] Alta
      - [x] Listar
-     - [ ] Editarlos
+     - [x] Editarlos
      - [x] Eliminarlos por ISBN
-     - [ ] Busqueda (exacta) por ISBN
+     - [x] Busqueda (exacta) por ISBN
      - [x] Busqueda (parcial) por titulo
      - [x] Busqueda (parcial) por autor
 

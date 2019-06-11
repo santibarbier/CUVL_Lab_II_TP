@@ -45,15 +45,16 @@ void gestionMenu()
                 buscarLibroPorNombreDeAutor();
                 pressAnyKeyToContinue("");
                 break;
-	    case GES_BUSCAR_APELLIDO:
+            case GES_BUSCAR_APELLIDO:
                 buscarLibroPorApellidoDeAutor();
                 pressAnyKeyToContinue("");
                 break;
-	    case GES_BUSCAR_ISBN:
+            case GES_BUSCAR_ISBN:
                 buscarLibroPorISBN();
                 break;
             case GES_EDITAR:
-                printOptionWIP(); // WIP
+                editarLibro();
+                break;
             case GES_ELIMINAR:
                 eliminarLibro();
                 break;

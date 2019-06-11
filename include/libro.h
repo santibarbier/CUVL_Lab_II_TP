@@ -23,4 +23,5 @@ void nuevoLibro();
 void listarLibros();
 void imprimirLibro(long pos);
 void eliminarLibro();
+void editarLibro();
 #endif // ALTA_LIBRO_H_
