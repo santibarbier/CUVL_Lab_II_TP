@@ -1,5 +1,5 @@
 # Todo:
-- [ ] antes y despues de editado
+- [ ] cuando se editan libros al finalizar imprimir como estaba y como quedo el libro
 - [ ] no se tendrian que poder meter libros con mismo ISBN
 - [x] pulido de menues:
   - [x] limpiar pantalla cada vez que se selecciona una opcion dentro de un submenu
