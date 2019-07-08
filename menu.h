@@ -22,14 +22,17 @@ OTRO EJEMPLO DE COMO USAR
     }
 */
 
+// TODO: Hacer que el sistema de Menu use listas en vez de vectores
+
 #ifndef MENU_H_INCLUDED
 #define MENU_H_INCLUDED
 
 #define MSJ_SALIR "Salir"
 #define MSJ_VOLVER "Volver"
+#define MENU_CHARS 50
 
 typedef struct Menu {
-    char titulo[50];
+    char titulo[MENU_CHARS];
     void (*pFuncion)();
 } Menu;
 

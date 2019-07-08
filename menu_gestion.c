@@ -10,7 +10,7 @@ void _nuevoLibro()
 {
     limpiarPantalla();
     printf("MENU PRINCIPAL -> GESTION DE LIBROS -> NUEVO\n\n");
-    nuevoLibro();
+    menuNuevoLibro();
     presioneUnaTeclaParaContinuar();
 }
 
@@ -18,7 +18,7 @@ void _editarLibro()
 {
     limpiarPantalla();
     printf("MENU PRINCIPAL -> GESTION DE LIBROS -> EDITAR\n\n");
-    editarLibro();
+    menuEditarLibro();
     presioneUnaTeclaParaContinuar();
 }
 
@@ -26,7 +26,7 @@ void _eliminarLibro()
 {
     limpiarPantalla();
     printf("MENU PRINCIPAL -> GESTION DE LIBROS -> ELIMINAR\n\n");
-    eliminarLibro();
+    menuEliminarLibro();
     presioneUnaTeclaParaContinuar();
 }
 
@@ -34,7 +34,7 @@ void _listarLibros()
 {
     limpiarPantalla();
     printf("MENU PRINCIPAL -> GESTION DE LIBROS -> LISTAR\n\n");
-    listarLibros();
+    imprimirListadoDeLibros();
     presioneUnaTeclaParaContinuar();
 }
 

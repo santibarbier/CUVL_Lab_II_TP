@@ -31,6 +31,9 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="_main.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="ayuda.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -39,13 +42,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="libro.h" />
-		<Unit filename="libro_buscar.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="libro_buscar.h" />
-		<Unit filename="main.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="menu.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -70,6 +66,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="menu_ventas.h" />
+		<Unit filename="venta.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="venta.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

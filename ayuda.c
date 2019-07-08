@@ -19,3 +19,13 @@ void presioneUnaTeclaParaContinuar()
     printf("Presione una tecla para continuar.");
     getch();
 }
+
+bool esStringValido(const char* pChar)
+{
+    return (*pChar) != '\0';
+}
+
+void printOperacionCancelada()
+{
+    printf("Operacion cancelada.\n");
+}

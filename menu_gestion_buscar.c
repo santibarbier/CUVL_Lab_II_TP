@@ -4,13 +4,12 @@
 #include "menu.h"
 
 #include "libro.h"
-#include "libro_buscar.h"
 
 void _buscarISBN()
 {
     limpiarPantalla();
     printf("MENU PRINCIPAL -> GESTION DE LIBROS -> BUSCAR LIBROS -> ISBN\n\n");
-    buscarLibroPorISBN();
+    menuBuscarLibroPorISBN();
     presioneUnaTeclaParaContinuar();
 }
 
@@ -18,7 +17,7 @@ void _buscarTitulo()
 {
     limpiarPantalla();
     printf("MENU PRINCIPAL -> GESTION DE LIBROS -> BUSCAR LIBROS -> TITULO\n\n");
-    buscarLibroPorTitulo();
+    menuBuscarLibroPorTitulo();
     presioneUnaTeclaParaContinuar();
 }
 
@@ -26,7 +25,7 @@ void _buscarNombre()
 {
     limpiarPantalla();
     printf("MENU PRINCIPAL -> GESTION DE LIBROS -> BUSCAR LIBROS -> NOMBRE\n\n");
-    buscarLibroPorNombreDeAutor();
+    menuBuscarLibroPorNombreDeAutor();
     presioneUnaTeclaParaContinuar();
 }
 
@@ -34,7 +33,7 @@ void _buscarApellido()
 {
     limpiarPantalla();
     printf("MENU PRINCIPAL -> GESTION DE LIBROS -> BUSCAR LIBROS -> APELLIDO\n\n");
-    buscarLibroPorApellidoDeAutor();
+    menuBuscarLibroPorApellidoDeAutor();
     presioneUnaTeclaParaContinuar();
 }
 
