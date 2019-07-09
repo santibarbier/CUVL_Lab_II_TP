@@ -1,4 +1,12 @@
 # Todo:
+- [ ] Venta: calcular monto total
+- [ ] Venta: fecha
+- [ ] Venta: id factura
+- [ ] implementar venta por domicilio
+- [ ] implementar venta por sucursal
+- [ ] @FIX cambiar como se busca en el archivo
+- [ ] @FIX hacer char thingy[NUM+1] y memset en todo lo que haga falta
+- [ ] mover todo lo de menu_x.h al main
 - [x] @COMPLETED cancelar ingreso de nuevo libro
 - [ ] cuando se editan libros al finalizar imprimir como estaba y como quedo el libro
 - [ ] @FIX no se tendrian que poder meter libros con mismo ISBN

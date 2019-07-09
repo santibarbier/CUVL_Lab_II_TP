@@ -22,20 +22,31 @@ typedef struct ST_LIBRO
     int stockReservado;
 } ST_LIBRO;
 
+//void ST_LIBRO_set(ST_LIBRO *pLibro, const char *titulo, const char *nombreAutor, const char *apellidoAutor,
+//               double precio,int isbn, int stockDisponible, int stockReservado)
+//{
+//    strcpy(pLibro->titulo, titulo);
+//    strcpy(pLibro->autor.nombre, nombreAutor);
+//    strcpy(pLibro->autor.apellido, apellidoAutor);
+//    pLibro->precio = precio;
+//    pLibro->isbn = isbn;
+//    pLibro->stockDisponible = stockDisponible;
+//    pLibro->stockReservado = stockReservado;
+//}
+
 FILE* archLibrosAbrir(const char* modo);
+ST_LIBRO archLibrosConseguirLibroPorPos(long pos);
+long archLibrosConseguirPosPorISBN(int isbn);
+void archLibrosEliminarPorPos(long pos);
+void archLibrosImprimirTodos();
 
-void ST_LIBRO_set( ST_LIBRO *pLibro, const char *titulo, const char *nombreAutor, const char *apellidoAutor, double precio,int isbn, int stockDisponible, int stockReservado);
+void menuLibroBuscarPorISBN();
+void menuLibroBuscarPorTitulo();
+void menuLibroBuscarPorNombreDeAutor();
+void menuLibroBuscarPorApellidoDeAutor();
 
-void imprimirListadoDeLibros();
-void imprimirLibro(long pos);
-
-void menuBuscarLibroPorISBN();
-void menuBuscarLibroPorTitulo();
-void menuBuscarLibroPorNombreDeAutor();
-void menuBuscarLibroPorApellidoDeAutor();
-
-void menuEditarLibro();
-void menuEliminarLibro();
-void menuNuevoLibro();
+void menuLibroEditar();
+void menuLibroEliminar();
+void menuLibroNuevo();
 
 #endif // ALTA_LIBRO_H_

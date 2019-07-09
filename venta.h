@@ -1,24 +1,8 @@
 #ifndef VENTAS_H_INCLUDED
 #define VENTAS_H_INCLUDED
 
-#include "libro.h"
-#include <time.h>
-
-typedef struct VentaLibro
-{
-    int isbn;
-    double precio;
-    char titulo[LIBRO_CHARS];
-    struct VentaLibro* pSig;
-} VentaLibro;
-
-typedef struct Venta
-{
-    time_t fecha;
-    int factura;
-    double dinero;
-    VentaLibro* pLibros;
-    struct Venta* pSig;
-} Venta;
+void initVentas();
+void clearVentas();
+void menuVentas();
 
 #endif // VENTAS_H_INCLUDED

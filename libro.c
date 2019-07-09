@@ -9,10 +9,8 @@
 #define ARCHIVO "_libros.dat"
 #define ARCHIVOAUX "_libros_aux.dat"
 
-static void _printCabezeraDeTabla(const char* tituloTabla)
+static void _imprimirCabezeraDeTabla()
 {
-//    printf("\t\t\t\t\t%s\n\n", tituloTabla);
-    printf("\t\t\t\t\t%s\n", tituloTabla);
     printf("%20s\t", "TITULO");
     printf("%15s\t", "AUTOR");
     printf("%15s\t", "APELLIDO");
@@ -24,16 +22,44 @@ static void _printCabezeraDeTabla(const char* tituloTabla)
     printf("\n=========================================================================================================\n");
 }
 
-void ST_LIBRO_set(ST_LIBRO *pLibro, const char *titulo, const char *nombreAutor, const char *apellidoAutor,
-               double precio,int isbn, int stockDisponible, int stockReservado)
+void _imprimirLibro(long pos)
 {
-    strcpy(pLibro->titulo, titulo);
-    strcpy(pLibro->autor.nombre, nombreAutor);
-    strcpy(pLibro->autor.apellido, apellidoAutor);
-    pLibro->precio = precio;
-    pLibro->isbn = isbn;
-    pLibro->stockDisponible = stockDisponible;
-    pLibro->stockReservado = stockReservado;
+    FILE *pArchivo = archLibrosAbrir("rb");
+    ST_LIBRO libro;
+
+    fseek(pArchivo, pos, SEEK_SET);
+    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+
+    printf("%20s\t", libro.titulo);
+    printf("%15s\t", libro.autor.nombre);
+    printf("%15s\t", libro.autor.apellido);
+    printf("%12.2lf\t", libro.precio);
+    printf("%9i\t", libro.isbn);
+    printf("%5i\t", libro.stockDisponible);
+    printf("%9i\t", libro.stockReservado);
+    printf("\n");
+
+    fclose(pArchivo);
+}
+
+void _imprimirLibroEnVariasLineas(long pos)
+{
+    FILE *pArchivo = archLibrosAbrir("rb");
+    ST_LIBRO libro;
+
+    fseek(pArchivo, pos, SEEK_SET);
+    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+
+    printf("\n          TITULO: %s", libro.titulo);
+    printf("\n    NOMBRE AUTOR: %s", libro.autor.nombre);
+    printf("\n  APELLIDO AUTOR: %s", libro.autor.apellido);
+    printf("\n          PRECIO: %.2lf", libro.precio);
+    printf("\n            ISBN: %i", libro.isbn);
+    printf("\nSTOCK DISPONIBLE: %i", libro.stockDisponible);
+    printf("\n STOCK RESERVADO: %i", libro.stockReservado);
+    printf("\n");
+
+    fclose(pArchivo);
 }
 
 FILE* archLibrosAbrir(const char* modo)
@@ -47,7 +73,102 @@ FILE* archLibrosAbrir(const char* modo)
     return pArchivo;
 }
 
-void menuNuevoLibro()
+ST_LIBRO archLibrosConseguirLibroPorPos(long pos)
+{
+    FILE* pArchivo = archLibrosAbrir("rb");
+    fseek(pArchivo, pos, SEEK_SET);
+    ST_LIBRO libro;
+    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+    fclose(pArchivo);
+    return libro;
+}
+
+long archLibrosConseguirPosPorISBN(int isbn)
+{
+    FILE* pArchivo = archLibrosAbrir("rb");
+    long pos = 0;
+    ST_LIBRO libro;
+    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+    while(!feof(pArchivo) && libro.isbn != isbn)
+    {
+        fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+        pos = ftell(pArchivo) - sizeof(ST_LIBRO);
+    }
+    fclose(pArchivo);
+    if (libro.isbn != isbn)
+    {
+        return -1;
+    }
+    return pos;
+}
+
+void archLibrosEliminarPorPos(long pos)
+{
+    FILE *pArchivo = archLibrosAbrir("rb");
+    FILE *pArchivoAux = fopen(ARCHIVOAUX, "wb");
+    fseek(pArchivo, 0, SEEK_END);
+    bool eliminado = false;
+    // long posicion = ftell(pArchivo) - sizeof(ST_LIBRO);
+    rewind(pArchivo);
+    ST_LIBRO libro;
+    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+    while (!feof(pArchivo))
+    {
+        long cur = ftell(pArchivo) - sizeof(ST_LIBRO);
+        if (cur != pos)
+        {
+            fwrite(&libro, sizeof(ST_LIBRO), 1, pArchivoAux);
+        }
+        else
+        {
+            eliminado = true;
+        }
+        fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+    }
+    if (eliminado)
+    {
+        printf("Libro eliminado\n");
+        presioneUnaTeclaParaContinuar();
+    }
+    else
+    {
+        printf("No se pudo eliminar\n");
+        presioneUnaTeclaParaContinuar();
+    }
+    fclose(pArchivo);
+    fclose(pArchivoAux);
+    if (remove(ARCHIVO) != 0)
+    {
+        limpiarPantalla();
+        printf("Hubo un error al tratar de eliminar el archivo: %s\n", ARCHIVO);
+        presioneUnaTeclaParaContinuar();
+    }
+    rename(ARCHIVOAUX, ARCHIVO);
+}
+
+void archLibrosImprimirTodos()
+{
+//    limpiarPantalla();
+    FILE *pArchivo = archLibrosAbrir("rb");
+    ST_LIBRO * pLibro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
+    fread(pLibro, sizeof(ST_LIBRO), 1, pArchivo);
+
+    _imprimirCabezeraDeTabla();
+
+    long pos;
+    while(!feof(pArchivo))
+    {
+        pos = ftell(pArchivo) - sizeof(ST_LIBRO);
+        _imprimirLibro(pos);
+        fread(pLibro, sizeof(ST_LIBRO), 1, pArchivo);
+    }
+
+    fclose(pArchivo);
+
+    printf("\n");
+}
+
+void menuLibroNuevo()
 {
     FILE *pArchivo = archLibrosAbrir("ab+");
     ST_LIBRO libro;
@@ -105,172 +226,7 @@ void menuNuevoLibro()
     fclose(pArchivo);
 }
 
-void imprimirListadoDeLibros()
-{
-//    limpiarPantalla();
-    FILE *pArchivo = archLibrosAbrir("rb");
-    ST_LIBRO * pLibro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
-    fread(pLibro, sizeof(ST_LIBRO), 1, pArchivo);
-
-//    librosImprimirCabezeraTabla("LISTADO DE LIBROS");
-    _printCabezeraDeTabla("");
-
-    long pos;
-    while(!feof(pArchivo))
-    {
-        pos = ftell(pArchivo) - sizeof(ST_LIBRO);
-        imprimirLibro(pos);
-        fread(pLibro, sizeof(ST_LIBRO), 1, pArchivo);
-    }
-
-    fclose(pArchivo);
-
-    printf("\n");
-}
-
-void imprimirLibro(long pos)
-{
-    FILE *pArchivo = archLibrosAbrir("rb");
-    ST_LIBRO libro;
-
-    fseek(pArchivo, pos, SEEK_SET);
-    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-
-    printf("%20s\t", libro.titulo);
-    printf("%15s\t", libro.autor.nombre);
-    printf("%15s\t", libro.autor.apellido);
-    printf("%12.2lf\t", libro.precio);
-    printf("%9i\t", libro.isbn);
-    printf("%5i\t", libro.stockDisponible);
-    printf("%9i\t", libro.stockReservado);
-    printf("\n");
-
-    fclose(pArchivo);
-}
-
-void imprimirLibroEnVariasLineas(long pos)
-{
-    FILE *pArchivo = archLibrosAbrir("rb");
-    ST_LIBRO libro;
-
-    fseek(pArchivo, pos, SEEK_SET);
-    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-
-    printf("\n          TITULO: %s", libro.titulo);
-    printf("\n    NOMBRE AUTOR: %s", libro.autor.nombre);
-    printf("\n  APELLIDO AUTOR: %s", libro.autor.apellido);
-    printf("\n          PRECIO: %.2lf", libro.precio);
-    printf("\n            ISBN: %i", libro.isbn);
-    printf("\nSTOCK DISPONIBLE: %i", libro.stockDisponible);
-    printf("\n STOCK RESERVADO: %i", libro.stockReservado);
-    printf("\n");
-
-    fclose(pArchivo);
-}
-
-long archLibrosConseguirPosPorISBN(int isbn)
-{
-    FILE* pArchivo = archLibrosAbrir("rb");
-    long pos = 0;
-    ST_LIBRO libro;
-    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-    while(!feof(pArchivo) && libro.isbn != isbn)
-    {
-        fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-        pos = ftell(pArchivo) - sizeof(ST_LIBRO);
-    }
-    fclose(pArchivo);
-    if (libro.isbn != isbn)
-    {
-        return -1;
-    }
-    return pos;
-}
-
-ST_LIBRO archLibrosConseguirPorPos(long pos)
-{
-    FILE* pArchivo = archLibrosAbrir("rb");
-    fseek(pArchivo, pos, SEEK_SET);
-    ST_LIBRO libro;
-    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-    fclose(pArchivo);
-    return libro;
-}
-
-void menuBuscarLibroPorISBN()
-{
-//    limpiarPantalla();
-    int isbn = 0;
-    printf("Buscar libro por ISBN.\n");
-    printf("- ISBN: ");
-    scanf("%i", &isbn);
-    long pos = archLibrosConseguirPosPorISBN(isbn);
-    if (pos >= 0)
-    {
-        ST_LIBRO libro = archLibrosConseguirPorPos(pos);
-        if (libro.isbn != isbn)
-        {
-            printf("No se encontre el libro con ISBN: %i\n", isbn);
-            presioneUnaTeclaParaContinuar();
-        }
-        else
-        {
-            imprimirLibroEnVariasLineas(pos);
-            presioneUnaTeclaParaContinuar("");
-        }
-    }
-    else
-    {
-        printf("No se encontre el libro con ISBN: %i\n", isbn);
-        presioneUnaTeclaParaContinuar();
-    }
-}
-
-void archLibrosEliminarPorPos(long pos)
-{
-    FILE *pArchivo = archLibrosAbrir("rb");
-    FILE *pArchivoAux = fopen(ARCHIVOAUX, "wb");
-    fseek(pArchivo, 0, SEEK_END);
-    bool eliminado = false;
-    // long posicion = ftell(pArchivo) - sizeof(ST_LIBRO);
-    rewind(pArchivo);
-    ST_LIBRO libro;
-    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-    while (!feof(pArchivo))
-    {
-        long cur = ftell(pArchivo) - sizeof(ST_LIBRO);
-        if (cur != pos)
-        {
-            fwrite(&libro, sizeof(ST_LIBRO), 1, pArchivoAux);
-        }
-        else
-        {
-            eliminado = true;
-        }
-        fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-    }
-    if (eliminado)
-    {
-        printf("Libro eliminado\n");
-        presioneUnaTeclaParaContinuar();
-    }
-    else
-    {
-        printf("No se pudo eliminar\n");
-        presioneUnaTeclaParaContinuar();
-    }
-    fclose(pArchivo);
-    fclose(pArchivoAux);
-    if (remove(ARCHIVO) != 0)
-    {
-        limpiarPantalla();
-        printf("Hubo un error al tratar de eliminar el archivo: %s\n", ARCHIVO);
-        presioneUnaTeclaParaContinuar();
-    }
-    rename(ARCHIVOAUX, ARCHIVO);
-}
-
-void menuEliminarLibro()
+void menuLibroEliminar()
 {
     limpiarPantalla();
     int isbn = 0;
@@ -292,7 +248,7 @@ void menuEliminarLibro()
     long pos = archLibrosConseguirPosPorISBN(isbn);
     if (pos >= 0)
     {
-        ST_LIBRO libro = archLibrosConseguirPorPos(pos);
+        ST_LIBRO libro = archLibrosConseguirLibroPorPos(pos);
         if (libro.isbn != isbn)
         {
             printf("No se pudo eliminar el libro. No hay libro con el ISBN: %i\n", isbn);
@@ -311,11 +267,16 @@ void menuEliminarLibro()
     }
 }
 
+static void _imprimirBusquedaSinResultados()
+{
+    printf("\nNo se encontro ningun libro.\n");
+}
+
 void _editarLibroEnPantalla(long pos)
 {
-    ST_LIBRO libro = archLibrosConseguirPorPos(pos);
+    ST_LIBRO libro = archLibrosConseguirLibroPorPos(pos);
 
-    imprimirLibroEnVariasLineas(pos);
+    _imprimirLibroEnVariasLineas(pos);
 
     // EDITAR LIBRO
     ST_LIBRO libroAux;
@@ -378,9 +339,9 @@ void _editarLibroEnPantalla(long pos)
     presioneUnaTeclaParaContinuar("");
 }
 
-void menuEditarLibro()
+void menuLibroEditar()
 {
-    imprimirListadoDeLibros();
+    archLibrosImprimirTodos();
 
     int isbn = 0;
     printf("\n- ISBN: ");
@@ -388,7 +349,7 @@ void menuEditarLibro()
     long pos = archLibrosConseguirPosPorISBN(isbn);
     if (pos >= 0)
     {
-        ST_LIBRO libro = archLibrosConseguirPorPos(pos);
+        ST_LIBRO libro = archLibrosConseguirLibroPorPos(pos);
         if (libro.isbn != isbn)
         {
             printf("No se encontre el libro con ISBN: %i\n", isbn);
@@ -406,90 +367,7 @@ void menuEditarLibro()
     }
 }
 
-static void _printMsjBusquedaSinResultados()
-{
-    printf("\nNo se encontro ningun libro.\n");
-}
-
-void menuBuscarLibroPorTitulo()
-{
-    FILE *pArchivo = archLibrosAbrir("rb");
-    ST_LIBRO libro;
-
-//    limpiarPantalla();
-
-    printf("\nBUSCAR TITULO: ");
-    char buscar[LIBRO_CHARS];
-    fflush(stdin);
-    gets(buscar);
-
-    _printCabezeraDeTabla("RESULTADO DE BUSQUEDA");
-
-    bool encontrado = false;
-    char *busqueda = NULL;
-    long pos;
-
-    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-    while (!feof(pArchivo))
-    {
-        busqueda = strstr(strlwr(libro.titulo), strlwr(buscar));
-        if (busqueda != NULL)// if (strcmp(libro.titulo, buscar) == 0)
-        {
-            encontrado = true;
-            pos = ftell(pArchivo) - sizeof(ST_LIBRO);
-            imprimirLibro(pos);
-        }
-        fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-    }
-
-    if (encontrado == false)
-    {
-        _printMsjBusquedaSinResultados();
-    }
-
-    fclose(pArchivo);
-}
-
-void menuBuscarLibroPorNombreDeAutor()
-{
-    FILE *pArchivo = archLibrosAbrir("rb");
-    ST_LIBRO libro;
-
-//    limpiarPantalla();
-
-    printf("\nBUSCAR NOMBRE DE AUTOR: ");
-    char buscar[LIBRO_CHARS];
-    fflush(stdin);
-    gets(buscar);
-
-    _printCabezeraDeTabla("RESULTADO DE BUSQUEDA");
-
-    bool encontrado = false;
-    char *busqueda = NULL;
-    long pos;
-
-    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-    while (!feof(pArchivo))
-    {
-        busqueda = strstr(strlwr(libro.autor.nombre), strlwr(buscar));
-        if (busqueda != NULL)// if (strcmp(libro.autor.nombre, buscar) == 0)
-        {
-            encontrado = true;
-            pos = ftell(pArchivo) - sizeof(ST_LIBRO);
-            imprimirLibro(pos);
-        }
-        fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-    }
-
-    if (encontrado == false)
-    {
-        _printMsjBusquedaSinResultados();
-    }
-
-    fclose(pArchivo);
-}
-
-void menuBuscarLibroPorApellidoDeAutor()
+void menuLibroBuscarPorApellidoDeAutor()
 {
     FILE *pArchivo = archLibrosAbrir("rb");
     ST_LIBRO libro;
@@ -501,7 +379,7 @@ void menuBuscarLibroPorApellidoDeAutor()
     fflush(stdin);
     gets(buscar);
 
-    _printCabezeraDeTabla("RESULTADO DE BUSQUEDA");
+    _imprimirCabezeraDeTabla();
 
     bool encontrado = false;
     char *busqueda = NULL;
@@ -515,14 +393,121 @@ void menuBuscarLibroPorApellidoDeAutor()
         {
             encontrado = true;
             pos = ftell(pArchivo) - sizeof(ST_LIBRO);
-            imprimirLibro(pos);
+            _imprimirLibro(pos);
         }
         fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
     }
 
     if (encontrado == false)
     {
-        _printMsjBusquedaSinResultados();
+        _imprimirBusquedaSinResultados();
+    }
+
+    fclose(pArchivo);
+}
+
+void menuLibroBuscarPorISBN()
+{
+//    limpiarPantalla();
+    int isbn = 0;
+    printf("Buscar libro por ISBN.\n");
+    printf("- ISBN: ");
+    scanf("%i", &isbn);
+    long pos = archLibrosConseguirPosPorISBN(isbn);
+    if (pos >= 0)
+    {
+        ST_LIBRO libro = archLibrosConseguirLibroPorPos(pos);
+        if (libro.isbn != isbn)
+        {
+            printf("No se encontre el libro con ISBN: %i\n", isbn);
+            presioneUnaTeclaParaContinuar();
+        }
+        else
+        {
+            _imprimirLibroEnVariasLineas(pos);
+            presioneUnaTeclaParaContinuar("");
+        }
+    }
+    else
+    {
+        printf("No se encontre el libro con ISBN: %i\n", isbn);
+        presioneUnaTeclaParaContinuar();
+    }
+}
+
+void menuLibroBuscarPorNombreDeAutor()
+{
+    FILE *pArchivo = archLibrosAbrir("rb");
+    ST_LIBRO libro;
+
+//    limpiarPantalla();
+
+    printf("\nBUSCAR NOMBRE DE AUTOR: ");
+    char buscar[LIBRO_CHARS];
+    fflush(stdin);
+    gets(buscar);
+
+    _imprimirCabezeraDeTabla();
+
+    bool encontrado = false;
+    char *busqueda = NULL;
+    long pos;
+
+    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+    while (!feof(pArchivo))
+    {
+        busqueda = strstr(strlwr(libro.autor.nombre), strlwr(buscar));
+        if (busqueda != NULL)// if (strcmp(libro.autor.nombre, buscar) == 0)
+        {
+            encontrado = true;
+            pos = ftell(pArchivo) - sizeof(ST_LIBRO);
+            _imprimirLibro(pos);
+        }
+        fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+    }
+
+    if (encontrado == false)
+    {
+        _imprimirBusquedaSinResultados();
+    }
+
+    fclose(pArchivo);
+}
+
+void menuLibroBuscarPorTitulo()
+{
+    FILE *pArchivo = archLibrosAbrir("rb");
+    ST_LIBRO libro;
+
+//    limpiarPantalla();
+
+    printf("\nBUSCAR TITULO: ");
+    char buscar[LIBRO_CHARS];
+    fflush(stdin);
+    gets(buscar);
+
+    _imprimirCabezeraDeTabla();
+
+    bool encontrado = false;
+    char *busqueda = NULL;
+    long pos;
+
+    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+    while (!feof(pArchivo))
+    {
+        busqueda = strstr(strlwr(libro.titulo), strlwr(buscar));
+        if (busqueda != NULL)// if (strcmp(libro.titulo, buscar) == 0)
+        {
+            encontrado = true;
+            pos = ftell(pArchivo) - sizeof(ST_LIBRO);
+            _imprimirLibro(pos);
+        }
+        fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
+    }
+
+    if (encontrado == false)
+    {
+        _imprimirBusquedaSinResultados();
     }
 
     fclose(pArchivo);

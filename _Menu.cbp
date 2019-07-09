@@ -42,30 +42,15 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="libro.h" />
+		<Unit filename="libro2.h" />
 		<Unit filename="menu.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="menu.h" />
-		<Unit filename="menu_entregas.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="menu_entregas.h" />
 		<Unit filename="menu_gestion.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="menu_gestion.h" />
-		<Unit filename="menu_gestion_buscar.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="menu_gestion_buscar.h" />
-		<Unit filename="menu_principal.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="menu_principal.h" />
-		<Unit filename="menu_ventas.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="menu_ventas.h" />
 		<Unit filename="venta.c">
 			<Option compilerVar="CC" />
 		</Unit>
