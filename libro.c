@@ -18,7 +18,6 @@ static void _imprimirCabezeraDeTabla()
     printf("%9s\t", "ISBN");
     printf("%s\t", "STOCK");
     printf("%s\t", "RESERVADO");
-//    printf("\n\n");
     printf("\n=========================================================================================================\n");
 }
 
@@ -108,7 +107,7 @@ void archLibrosEliminarPorPos(long pos)
     FILE *pArchivoAux = fopen(ARCHIVOAUX, "wb");
     fseek(pArchivo, 0, SEEK_END);
     bool eliminado = false;
-    // long posicion = ftell(pArchivo) - sizeof(ST_LIBRO);
+    // long posicion = ftell(pArchivo) - sizeof(ST_LIBRO);// TODO: que es esto?
     rewind(pArchivo);
     ST_LIBRO libro;
     fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
@@ -128,27 +127,25 @@ void archLibrosEliminarPorPos(long pos)
     if (eliminado)
     {
         printf("Libro eliminado\n");
-        presioneUnaTeclaParaContinuar();
     }
     else
     {
         printf("No se pudo eliminar\n");
-        presioneUnaTeclaParaContinuar();
     }
     fclose(pArchivo);
     fclose(pArchivoAux);
     if (remove(ARCHIVO) != 0)
     {
-        limpiarPantalla();
         printf("Hubo un error al tratar de eliminar el archivo: %s\n", ARCHIVO);
-        presioneUnaTeclaParaContinuar();
     }
-    rename(ARCHIVOAUX, ARCHIVO);
+    else
+    {
+        rename(ARCHIVOAUX, ARCHIVO);
+    }
 }
 
 void archLibrosImprimirTodos()
 {
-//    limpiarPantalla();
     FILE *pArchivo = archLibrosAbrir("rb");
     ST_LIBRO * pLibro = (ST_LIBRO*) malloc(sizeof(ST_LIBRO));
     fread(pLibro, sizeof(ST_LIBRO), 1, pArchivo);
@@ -173,8 +170,32 @@ void menuLibroNuevo()
     FILE *pArchivo = archLibrosAbrir("ab+");
     ST_LIBRO libro;
 
+    archLibrosImprimirTodos();
+
     printf("ALTA DE NUEVO LIBRO\n");
     printf("- Para cancelar ingrese un string vacio o un numero menor a cero\n");
+
+    printf("\nISBN: ");
+    scanf("%i", &libro.isbn);
+    if (libro.isbn < 0)
+    {
+        printOperacionCancelada();
+        return;
+    }
+    else
+    {
+        while(archLibrosConseguirPosPorISBN(libro.isbn) >= 0)
+        {
+            printf("Ya hay un libro con ese ISBN. Por favor, ingrese otro.\n");
+            printf("\nISBN: ");
+            scanf("%i", &libro.isbn);
+            if (libro.isbn < 0)
+            {
+                printOperacionCancelada();
+                return;
+            }
+        }
+    }
 
     fflush(stdin);
 
@@ -210,14 +231,6 @@ void menuLibroNuevo()
         return;
     }
 
-    printf("\nISBN: ");
-    scanf("%i", &libro.isbn);
-    if (libro.isbn < 0)
-    {
-        printOperacionCancelada();
-        return;
-    }
-
     printf("\nSTOCK DISPONIBLE: ");
     scanf("%i", &libro.stockDisponible);
     libro.stockReservado = 0;
@@ -228,42 +241,30 @@ void menuLibroNuevo()
 
 void menuLibroEliminar()
 {
-    limpiarPantalla();
+    archLibrosImprimirTodos();
+
     int isbn = 0;
     printf("Ingrese ISBN del libro que de sea eliminar.\n");
     printf("- ISBN: ");
     scanf("%i", &isbn);
 
-//    FILE* pArchivo = abrirArchivoLibros("rb");
-//    long pos = 0;
-//    ST_LIBRO libro;
-//    fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-//    while(!feof(pArchivo) && libro.isbn != isbn)
-//    {
-//        fread(&libro, sizeof(ST_LIBRO), 1, pArchivo);
-//        pos = ftell(pArchivo) - sizeof(ST_LIBRO);
-//    }
-//    if (libro.isbn != isbn)
-
     long pos = archLibrosConseguirPosPorISBN(isbn);
     if (pos >= 0)
     {
-        ST_LIBRO libro = archLibrosConseguirLibroPorPos(pos);
-        if (libro.isbn != isbn)
-        {
-            printf("No se pudo eliminar el libro. No hay libro con el ISBN: %i\n", isbn);
-            presioneUnaTeclaParaContinuar();
-        }
-        else
-        {
-//            fclose(pArchivo);
-            archLibrosEliminarPorPos(pos);
-        }
+//        ST_LIBRO libro = archLibrosConseguirLibroPorPos(pos);
+//        if (libro.isbn != isbn)
+//        {
+//            printf("No se pudo eliminar el libro [libro.isbn != isbn].\nNo hay libro con el ISBN: %i\n", isbn);
+//        }
+//        else
+//        {
+//            archLibrosEliminarPorPos(pos);
+//        }
+        archLibrosEliminarPorPos(pos);
     }
     else
     {
-        printf("No se pudo eliminar el libro. No hay libro con el ISBN: %i\n", isbn);
-        presioneUnaTeclaParaContinuar();
+        printf("No se pudo eliminar el libro.\nNo hay libro con el ISBN: %i\n", isbn);
     }
 }
 
@@ -288,7 +289,6 @@ void _editarLibroEnPantalla(long pos)
 
     printf("TITULO: ");
     gets(libroAux.titulo);
-//    if (libroAux.titulo[0] != '\0') // Si string no esta vacio
     if (esStringValido(libroAux.titulo)) // Si string no esta vacio
     {
         strcpy(libro.titulo, libroAux.titulo);
@@ -296,7 +296,6 @@ void _editarLibroEnPantalla(long pos)
 
     printf("NOMBRE AUTOR: ");
     gets(libroAux.autor.nombre);
-//    if (libroAux.autor.nombre[0] != '\0') // Si string no esta vacio
     if (esStringValido(libroAux.autor.nombre)) // Si string no esta vacio
     {
         strcpy(libro.autor.nombre, libroAux.autor.nombre);
@@ -304,7 +303,6 @@ void _editarLibroEnPantalla(long pos)
 
     printf("APELLIDO AUTOR: ");
     gets(libroAux.autor.apellido);
-//    if (libroAux.autor.apellido[0] != '\0') // Si string no esta vacio
     if (esStringValido(libroAux.autor.apellido)) // Si string no esta vacio
     {
         strcpy(libro.autor.apellido, libroAux.autor.apellido);
@@ -321,7 +319,16 @@ void _editarLibroEnPantalla(long pos)
     scanf("%i", &libroAux.isbn);
     if (libroAux.isbn >= 0)
     {
-        libro.isbn = libroAux.isbn;
+        while(archLibrosConseguirPosPorISBN(libroAux.isbn) >= 0)
+        {
+            printf("Ya hay un libro con ese ISBN. Por favor, ingrese otro.\n");
+            printf("ISBN: ");
+            scanf("%i", &libroAux.isbn);
+        }
+        if (libroAux.isbn >= 0)
+        {
+            libro.isbn = libroAux.isbn;
+        }
     }
 
     printf("STOCK DISPONIBLE: ");
@@ -335,8 +342,6 @@ void _editarLibroEnPantalla(long pos)
     fseek(pArchivo, pos, SEEK_SET);
     fwrite(&libro, sizeof(ST_LIBRO), 1, pArchivo);
     fclose(pArchivo);
-
-    presioneUnaTeclaParaContinuar("");
 }
 
 void menuLibroEditar()
@@ -352,7 +357,7 @@ void menuLibroEditar()
         ST_LIBRO libro = archLibrosConseguirLibroPorPos(pos);
         if (libro.isbn != isbn)
         {
-            printf("No se encontre el libro con ISBN: %i\n", isbn);
+            printf("No se encontro el libro con ISBN: %i\n", isbn);
             presioneUnaTeclaParaContinuar();
         }
         else
@@ -362,7 +367,7 @@ void menuLibroEditar()
     }
     else
     {
-        printf("No se encontre el libro con ISBN: %i\n", isbn);
+        printf("No se encontro el libro con ISBN: %i\n", isbn);
         presioneUnaTeclaParaContinuar();
     }
 }
@@ -408,7 +413,6 @@ void menuLibroBuscarPorApellidoDeAutor()
 
 void menuLibroBuscarPorISBN()
 {
-//    limpiarPantalla();
     int isbn = 0;
     printf("Buscar libro por ISBN.\n");
     printf("- ISBN: ");
@@ -440,8 +444,6 @@ void menuLibroBuscarPorNombreDeAutor()
     FILE *pArchivo = archLibrosAbrir("rb");
     ST_LIBRO libro;
 
-//    limpiarPantalla();
-
     printf("\nBUSCAR NOMBRE DE AUTOR: ");
     char buscar[LIBRO_CHARS];
     fflush(stdin);
@@ -457,7 +459,7 @@ void menuLibroBuscarPorNombreDeAutor()
     while (!feof(pArchivo))
     {
         busqueda = strstr(strlwr(libro.autor.nombre), strlwr(buscar));
-        if (busqueda != NULL)// if (strcmp(libro.autor.nombre, buscar) == 0)
+        if (busqueda != NULL)// if (strcmp(libro.autor.nombre, buscar) == 0) // como lo haciamos antes
         {
             encontrado = true;
             pos = ftell(pArchivo) - sizeof(ST_LIBRO);
@@ -479,8 +481,6 @@ void menuLibroBuscarPorTitulo()
     FILE *pArchivo = archLibrosAbrir("rb");
     ST_LIBRO libro;
 
-//    limpiarPantalla();
-
     printf("\nBUSCAR TITULO: ");
     char buscar[LIBRO_CHARS];
     fflush(stdin);
@@ -496,7 +496,7 @@ void menuLibroBuscarPorTitulo()
     while (!feof(pArchivo))
     {
         busqueda = strstr(strlwr(libro.titulo), strlwr(buscar));
-        if (busqueda != NULL)// if (strcmp(libro.titulo, buscar) == 0)
+        if (busqueda != NULL)// if (strcmp(libro.titulo, buscar) == 0) // como lo haciamos antes
         {
             encontrado = true;
             pos = ftell(pArchivo) - sizeof(ST_LIBRO);

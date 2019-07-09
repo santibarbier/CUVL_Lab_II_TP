@@ -8,32 +8,14 @@
 #include <string.h>
 #include <time.h>
 
-typedef struct VentaLibro
-{
-    int isbn;
-    double precio;
-    char titulo[LIBRO_CHARS];
-    struct VentaLibro* pSig;
-} VentaLibro;
+#define CHARS 10000
 
-typedef struct Venta
-{
-    time_t fecha;
-    long int factura;
-    double dinero;
-    VentaLibro* pLibros;
-    struct Venta* pSig;
-} Venta;
-
-static Venta* pVentaSucurcual;
-static Venta* pVentaDomocilio;
-
-static void VentaLibro_imprimir(VentaLibro* pVentaLibro)
+void VentaLibro_imprimir(VentaLibro* pVentaLibro)
 {
     printf("- [%i] %s $%0.2f\n", pVentaLibro->isbn, pVentaLibro->titulo, pVentaLibro->precio);
 }
 
-static void VentaLibro_imprimirMultiples(VentaLibro* pVentaLibro)
+void VentaLibro_imprimirMultiples(VentaLibro* pVentaLibro)
 {
     while(pVentaLibro != NULL)
     {
@@ -42,14 +24,21 @@ static void VentaLibro_imprimirMultiples(VentaLibro* pVentaLibro)
     }
 }
 
-static void VentaLibro_pushFront(VentaLibro** ppVentaLibro, int isbn, double precio, const char* titulo)
+void VentaLibro_fprintf(FILE* stream, VentaLibro* pVentaLibro)
 {
+    printf("- [%i] %s $%0.2f\n", pVentaLibro->isbn, pVentaLibro->titulo, pVentaLibro->precio);
+}
+
+void VentaLibro_pushFront(VentaLibro** ppVentaLibro, int isbn, double precio, const char* titulo)
+{
+    // CREAMOS NUEVO NODO
     VentaLibro* pAux = (VentaLibro*)malloc(sizeof(VentaLibro));
     pAux->isbn = isbn;
     pAux->precio = precio;
     strncpy(pAux->titulo, titulo, LIBRO_CHARS);
     pAux->pSig = NULL;
 
+    // INSERTAMOS NUEVO NODO
     if ((*ppVentaLibro) == NULL)
     {
         (*ppVentaLibro) = pAux;
@@ -61,7 +50,7 @@ static void VentaLibro_pushFront(VentaLibro** ppVentaLibro, int isbn, double pre
     }
 }
 
-static VentaLibro* VentaLibro_popFront(VentaLibro** ppVentaLibro)
+VentaLibro* VentaLibro_popFront(VentaLibro** ppVentaLibro)
 {
     VentaLibro* pAux = (*ppVentaLibro);
     (*ppVentaLibro) = (*ppVentaLibro)->pSig;
@@ -69,7 +58,7 @@ static VentaLibro* VentaLibro_popFront(VentaLibro** ppVentaLibro)
     return pAux;
 }
 
-static void VentaLibro_clear(VentaLibro** ppVentaLibro)
+void VentaLibro_clear(VentaLibro** ppVentaLibro)
 {
     while((*ppVentaLibro) != NULL)
     {
@@ -78,35 +67,92 @@ static void VentaLibro_clear(VentaLibro** ppVentaLibro)
     }
 }
 
-static void Venta_pushEnd(Venta** ppVenta, VentaLibro* pLibros)
+double VentaLibro_costoTotal(VentaLibro* pVentaLibro)
 {
+    double costo = 0;
+    while(pVentaLibro != NULL)
+    {
+        costo += pVentaLibro->precio;
+        pVentaLibro = pVentaLibro->pSig;
+    }
+    return costo;
+}
+
+Venta* Venta_end(Venta* pVenta)
+{
+    while(pVenta != NULL && pVenta->pSig != NULL)
+    {
+        pVenta = pVenta->pSig;
+    }
+    return pVenta;
+}
+
+Venta* Venta_popFront(Venta** ppVenta)
+{
+    Venta* pAux = (*ppVenta);
+    (*ppVenta) = (*ppVenta)->pSig;
+    pAux->pSig = NULL;
+    return pAux;
+}
+
+void Venta_clear(Venta** ppVenta)
+{
+    while((*ppVenta) != NULL)
+    {
+        Venta* pAux = Venta_popFront(ppVenta);
+        VentaLibro_clear(&pAux->pLibros);
+        free(pAux);
+    }
+}
+
+void Venta_imprimir(Venta* pVenta)
+{
+    // primero convertimos el rawtime (time_t) a algo que se pueda usar
+    // y luego llamamos srtime para armar un string con la fecha en el formato deseado
+    struct tm* timeinfo;
+    char buffer[256];
+    timeinfo = localtime(&pVenta->fecha);
+    strftime(buffer, 256, "%Y/%m/%d %H:%M:%Shs", timeinfo);
+    // impresion
+    printf("FACTURA N-%li\n", pVenta->factura);
+    printf("FECHA: %s\n", buffer);
+    printf("LIBROS:\n");
+    VentaLibro_imprimirMultiples(pVenta->pLibros);
+    printf("TOTAL: $%0.2f\n", pVenta->dinero);
+}
+
+void Venta_fprintf(FILE* stream, Venta* pVenta)
+{
+    // primero convertimos el rawtime (time_t) a algo que se pueda usar
+    // y luego llamamos srtime para armar un string con la fecha en el formato deseado
+    struct tm* timeinfo;
+    char buffer[256];
+    timeinfo = localtime(&pVenta->fecha);
+    strftime(buffer, 256, "%Y/%m/%d %H:%M:%Shs", timeinfo);
+    // impresion
+    fprintf(stream, "FACTURA N-%li\n", pVenta->factura);
+    fprintf(stream, "FECHA: %s\n", buffer);
+    fprintf(stream, "LIBROS:\n");
+    VentaLibro_imprimirMultiples(pVenta->pLibros);
+    fprintf(stream, "TOTAL: $%0.2f\n", pVenta->dinero);
+}
+
+void Venta_pushEnd(Venta** ppVenta, VentaLibro* pLibros)
+{
+    // CREAMOS NUEVO NODO
     Venta* pNewVenta = (Venta*)malloc(sizeof(Venta));
     pNewVenta->pSig = NULL;
     pNewVenta->pLibros = pLibros;
-
     // numero factura random
     srand(time(0));
     pNewVenta->factura = rand();
-
     // usar fecha del sistema
     time(&pNewVenta->fecha);
-
-    // acumular precio de libros
-    pNewVenta->dinero = 0;
-    VentaLibro* pLibrosAux = pLibros;
-    while(pLibrosAux != NULL)
-    {
-        pNewVenta->dinero += pLibrosAux->precio;
-        pLibrosAux = pLibrosAux->pSig;
-    }
-
-    // buscar el ultimo nodo de la lista
-    Venta* pVentaAux = (*ppVenta);
-    while(pVentaAux != NULL && pVentaAux->pSig != NULL)
-    {
-        pVentaAux = pVentaAux->pSig;
-    }
-
+    // llamamos a la funcion para calcular el precio
+    pNewVenta->dinero = VentaLibro_costoTotal(pLibros);
+    // INSERTAMOS NUEVO NODO
+    // llamamos a la funcion para buscar el ultimo nodo de la lista
+    Venta* pVentaAux = Venta_end((*ppVenta));
     if (pVentaAux == NULL) // insertar primero
     {
         (*ppVenta) = pNewVenta;
@@ -117,80 +163,46 @@ static void Venta_pushEnd(Venta** ppVenta, VentaLibro* pLibros)
     }
 }
 
-static Venta* Venta_popFront(Venta** ppVenta)
+bool VentaLibro_has(VentaLibro* pVentaLibro, int isbn)
 {
-    Venta* pAux = (*ppVenta);
-    (*ppVenta) = (*ppVenta)->pSig;
-    pAux->pSig = NULL;
-    return pAux;
-}
-
-static void Venta_clear(Venta** ppVenta)
-{
-    while((*ppVenta) != NULL)
+    while(pVentaLibro != NULL)
     {
-        Venta* pAux = Venta_popFront(ppVenta);
-        VentaLibro_clear(&pAux->pLibros);
-        free(pAux);
+        if (pVentaLibro->isbn == isbn)
+        {
+            return true;
+        }
+        pVentaLibro = pVentaLibro->pSig;
     }
+    return false;
 }
 
-static void Venta_imprimir(Venta* pVenta)
+static void _generarArchFactura(Venta* pVenta)
 {
-    struct tm* timeinfo;
-
-    char buffer[256];
-
-    timeinfo = localtime(&pVenta->fecha);
-    strftime(buffer, 256, "%Y/%m/%d %H:%M:%Shs", timeinfo);
-
-    printf("FACTURA N-%li\n", pVenta->factura);
-    printf("FECHA: %s\n", buffer);
-    printf("LIBROS:\n");
-    VentaLibro_imprimirMultiples(pVenta->pLibros);
-    printf("TOTAL: $%0.2f\n", pVenta->dinero);
+//    char fname[256];
+//    memset(fname, '\0', 256);
+//
+//    struct tm* timeinfo;
+//    char buffer[256];
+//    timeinfo = localtime(&pVenta->fecha);
+//    strftime(buffer, 256, "fact_%Y-%m-d-%H-%M-%S", timeinfo);
+//    FILE* pFile = fopen("w");
+//    fputs();
 }
 
-static void Venta_imprimirMultiples(Venta* pVenta)
+void menuVenta(Venta** ppVentasDomicilio, Venta** ppVentasSucursal)
 {
-    while(pVenta != NULL)
-    {
-        Venta_imprimir(pVenta);
-        pVenta = pVenta->pSig;
-    }
-}
-
-void initVentas()
-{
-    pVentaDomocilio = NULL;
-    pVentaSucurcual = NULL;
-}
-
-void clearVentas()
-{
-    printf("\n");
-    Venta_imprimirMultiples(pVentaDomocilio);
-    printf("\n");
-    Venta_imprimirMultiples(pVentaSucurcual);
-    Venta_clear(&pVentaDomocilio);
-    Venta_clear(&pVentaSucurcual);
-}
-
-void menuVentas()
-{
-    limpiarPantalla();
-    printf("MENU PRINCIPAL -> VENTAS\n\n");
     // listar libros: titulo, autor, isbn, precio y stock
     archLibrosImprimirTodos();
 
-    // seleccionar libros por isbn y meterlos a una lista, excluir libros sin stock, solo se puede vender un ejemplar por libro
+    // seleccionar libros por isbn y meterlos a una lista
     int isbn;
+    VentaLibro* pLibrosAVender = NULL;
+
     printf("\nIngrese ISBN de libro a vender o un numero menor a cero para terminar.\n\n");
 
     printf("- ISBN: ");
     scanf("%i", &isbn);
 
-    VentaLibro* pLibrosAVender = NULL;
 
     while (isbn >= 0)// ingresar libros mientras que quiera el usuario
     {
@@ -198,8 +210,21 @@ void menuVentas()
         if (archPos != -1)
         {
             ST_LIBRO libro = archLibrosConseguirLibroPorPos(archPos);
-            VentaLibro_pushFront(&pLibrosAVender, isbn, libro.precio, libro.titulo);
-            printf("Libro agregado.\n");
+            // excluir libros que ya estan en la venta
+            if (VentaLibro_has(pLibrosAVender, isbn))
+            {
+                printf("Libro NO agregado. Ya esta en la lista para vender. Solo se puede vender una copia por original.\n");
+            }
+            // excluir libros sin stock
+            else if (libro.stockDisponible > libro.stockReservado)
+            {
+                VentaLibro_pushFront(&pLibrosAVender, isbn, libro.precio, libro.titulo);
+                printf("Libro agregado.\n");
+            }
+            else
+            {
+                printf("Libro NO agregado. No hay stock disponible.\n");
+            }
         }
         else
         {
@@ -218,6 +243,7 @@ void menuVentas()
         // al finalizar el ingreso, mostrar resumen y pedir confirmacion
         printf("\nRESUMEN DE VENTA\n");
         VentaLibro_imprimirMultiples(pLibrosAVender);
+        printf("TOTAL: $%0.2f\n", VentaLibro_costoTotal(pLibrosAVender));
 
         int confirmacion = 0;
         printf("\nCONFIRMAR (1 = Si, X = No): ");
@@ -231,13 +257,15 @@ void menuVentas()
             {
                 // ENVIO: agergar a una cola
                 printf("- Envio a domicilio.\n");
-                Venta_pushEnd(&pVentaSucurcual, pLibrosAVender);
+                Venta_pushEnd(ppVentasDomicilio, pLibrosAVender);
+                _generarArchFactura(Venta_end((*ppVentasDomicilio)));
             }
             else
             {
                 // RETIRO: agregar a una lista
                 printf("- Retiro por sucursal.\n");
-                Venta_pushEnd(&pVentaSucurcual, pLibrosAVender);
+                Venta_pushEnd(ppVentasSucursal, pLibrosAVender);
+                _generarArchFactura(Venta_end((*ppVentasSucursal)));
             }
             // si se confirma, generar factura.txt e incrementar en uno el stock reservado para cada libro
         }
@@ -247,7 +275,4 @@ void menuVentas()
             VentaLibro_clear(&pLibrosAVender);
         }
     }
-
-    printf("\n");
-    presioneUnaTeclaParaContinuar();
 }
