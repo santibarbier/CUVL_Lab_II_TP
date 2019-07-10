@@ -6,9 +6,6 @@
 #include "libro.h"
 #include "ayuda.h"
 
-#define ARCHIVO "_libros.dat"
-#define ARCHIVOAUX "_libros_aux.dat"
-
 static void _imprimirCabezeraDeTabla()
 {
     printf("%20s\t", "TITULO");
@@ -66,7 +63,8 @@ FILE* archLibrosAbrir(const char* modo)
     FILE *pArchivo = NULL;
     if((pArchivo = fopen(ARCHIVO, modo)) == NULL)
     {
-        printf("\n\nCerrando programa. Hubo problemas al tratar abrir \"libros.dat\"\n\n");
+        printf("\nCerrando programa. Hubo problemas al tratar abrir \"%s\"\n\n", ARCHIVO);
+        presioneUnaTeclaParaContinuar();
         exit(EXIT_FAILURE);
     }
     return pArchivo;
@@ -167,6 +165,7 @@ void archLibrosImprimirTodos()
 
 void menuLibroNuevo()
 {
+    crearDirectorio(CARPETA);
     FILE *pArchivo = archLibrosAbrir("ab+");
     ST_LIBRO libro;
 
@@ -338,10 +337,21 @@ void _editarLibroEnPantalla(long pos)
         libro.stockDisponible = libroAux.stockDisponible;
     }
 
+    printf("STOCK RESERVADO: ");
+    scanf("%i", &libroAux.stockReservado);
+    if (libroAux.stockReservado >= 0)
+    {
+        libro.stockReservado = libroAux.stockReservado;
+    }
+
     FILE* pArchivo = archLibrosAbrir("rb+");
     fseek(pArchivo, pos, SEEK_SET);
     fwrite(&libro, sizeof(ST_LIBRO), 1, pArchivo);
     fclose(pArchivo);
+
+    printf("\n");
+    _imprimirLibroEnVariasLineas(pos);
+    printf("\n");
 }
 
 void menuLibroEditar()
@@ -376,8 +386,6 @@ void menuLibroBuscarPorApellidoDeAutor()
 {
     FILE *pArchivo = archLibrosAbrir("rb");
     ST_LIBRO libro;
-
-    limpiarPantalla();
 
     printf("\nBUSCAR APPELIDO DE AUTOR: ");
     char buscar[LIBRO_CHARS];
@@ -512,3 +520,44 @@ void menuLibroBuscarPorTitulo()
 
     fclose(pArchivo);
 }
+
+bool archLibrosDisminuirStock(int isbn)
+{
+    FILE* pArch = archLibrosAbrir("rb+");
+    long pos = archLibrosConseguirPosPorISBN(isbn);
+    if (pos >= 0)
+    {
+        ST_LIBRO libro = archLibrosConseguirLibroPorPos(pos);
+        libro.stockDisponible--;
+        libro.stockReservado--;
+        fseek(pArch, pos, SEEK_SET);
+        fwrite(&libro, sizeof(ST_LIBRO), 1, pArch);
+        fclose(pArch);
+        return true;
+    }
+    fclose(pArch);
+    return false;
+}
+
+bool archLibrosReservarUno(int isbn)
+{
+    FILE* pArch = archLibrosAbrir("rb+");
+    long pos = archLibrosConseguirPosPorISBN(isbn);
+    if (pos >= 0)
+    {
+        ST_LIBRO libro = archLibrosConseguirLibroPorPos(pos);
+        if ((libro.stockReservado + 1) <= libro.stockDisponible)
+        {
+            libro.stockReservado++;
+            fseek(pArch, pos, SEEK_SET);
+            fwrite(&libro, sizeof(ST_LIBRO), 1, pArch);
+            fclose(pArch);
+            return true;
+        }
+    }
+    fclose(pArch);
+    return false;
+}
+
+
+

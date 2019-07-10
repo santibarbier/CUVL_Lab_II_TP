@@ -2,17 +2,17 @@
 - [x] @COMPLETED Venta: calcular monto total
 - [x] @COMPLETED Venta: fecha
 - [x] @COMPLETED Venta: id factura
-- [ ] implementar entrega en domicilio
-- [ ] implementar retiro por sucursal
-- [ ] generar archivo de factura
-- [ ] modificar stock al confirmar venta
+- [x] @COMPLETED implementar entrega en domicilio
+- [x] @COMPLETED implementar retiro por sucursal
+- [x] @COMPLETED generar archivo de factura
+- [x] @COMPLETED modificar stock al confirmar venta
 - [ ] @POSTPONED @FIX cambiar como se busca en el archivo
 - [ ] @POSTPONED @FIX hacer char thingy[NUM+1] y memset en todo lo que haga falta
 - [x] @CANCELLED mover todo lo de menu_x.h al main
 - [x] @COMPLETED excluir libros sin stock en venta
 - [x] @COMPLETED vender solo un ejemplar por venta
 - [x] @COMPLETED cancelar ingreso de nuevo libro
-- [ ] cuando se editan libros al finalizar imprimir como estaba y como quedo el libro
+- [x] @COMPLETED cuando se editan libros al finalizar imprimir como estaba y como quedo el libro
 - [x] @COMPLETED @FIX antes de agregar un nuevo libro, chequear que el isbn no este en el archivo, lo mismo para editar
 - [x] @COMPLETED pulido de menues:
   - [x] @COMPLETED limpiar pantalla cada vez que se selecciona una opcion dentro de un submenu

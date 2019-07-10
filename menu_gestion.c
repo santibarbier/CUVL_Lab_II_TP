@@ -73,7 +73,7 @@ static void _menuGestionBuscar()
         Menu_crear("ISBN", &_buscarISBN),
         Menu_crear("Titulo", &_buscarTitulo),
         Menu_crear("Nombre de autor", &_buscarNombre),
-        Menu_crear("Appelido de auto", &_buscarApellido),
+        Menu_crear("Apellido de auto", &_buscarApellido),
     };
     Menu_loopBasico(menus, 4, "MENU PRINCIPAL -> GESTION DE LIBROS -> BUSCAR LIBROS", MSJ_VOLVER);
 }

@@ -1,10 +1,15 @@
 #ifndef ALTA_LIBRO_H_
 #define ALTA_LIBRO_H_
 
+#define CARPETA "data"
+#define ARCHIVO "data/libros.dat"
+#define ARCHIVOAUX "data/libros_aux.dat"
+
 #define AUTOR_CHARS 20
 #define LIBRO_CHARS 50
 
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct ST_AUTOR
 {
@@ -39,6 +44,8 @@ ST_LIBRO archLibrosConseguirLibroPorPos(long pos);
 long archLibrosConseguirPosPorISBN(int isbn);
 void archLibrosEliminarPorPos(long pos);
 void archLibrosImprimirTodos();
+bool archLibrosDisminuirStock(int isbn);
+bool archLibrosReservarUno(int isbn);
 
 void menuLibroBuscarPorISBN();
 void menuLibroBuscarPorTitulo();

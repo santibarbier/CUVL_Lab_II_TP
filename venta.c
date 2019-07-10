@@ -8,25 +8,18 @@
 #include <string.h>
 #include <time.h>
 
-#define CHARS 10000
-
-void VentaLibro_imprimir(VentaLibro* pVentaLibro)
+void VentaLibro_fprintf(FILE* stream, VentaLibro* pVentaLibro)
 {
-    printf("- [%i] %s $%0.2f\n", pVentaLibro->isbn, pVentaLibro->titulo, pVentaLibro->precio);
+    fprintf(stream, "- [%i] %s $%0.2f\n", pVentaLibro->isbn, pVentaLibro->titulo, pVentaLibro->precio);
 }
 
-void VentaLibro_imprimirMultiples(VentaLibro* pVentaLibro)
+void VentaLibro_fprintfMulti(FILE* stream, VentaLibro* pVentaLibro)
 {
     while(pVentaLibro != NULL)
     {
-        VentaLibro_imprimir(pVentaLibro);
+        VentaLibro_fprintf(stream, pVentaLibro);
         pVentaLibro = pVentaLibro->pSig;
     }
-}
-
-void VentaLibro_fprintf(FILE* stream, VentaLibro* pVentaLibro)
-{
-    printf("- [%i] %s $%0.2f\n", pVentaLibro->isbn, pVentaLibro->titulo, pVentaLibro->precio);
 }
 
 void VentaLibro_pushFront(VentaLibro** ppVentaLibro, int isbn, double precio, const char* titulo)
@@ -105,22 +98,6 @@ void Venta_clear(Venta** ppVenta)
     }
 }
 
-void Venta_imprimir(Venta* pVenta)
-{
-    // primero convertimos el rawtime (time_t) a algo que se pueda usar
-    // y luego llamamos srtime para armar un string con la fecha en el formato deseado
-    struct tm* timeinfo;
-    char buffer[256];
-    timeinfo = localtime(&pVenta->fecha);
-    strftime(buffer, 256, "%Y/%m/%d %H:%M:%Shs", timeinfo);
-    // impresion
-    printf("FACTURA N-%li\n", pVenta->factura);
-    printf("FECHA: %s\n", buffer);
-    printf("LIBROS:\n");
-    VentaLibro_imprimirMultiples(pVenta->pLibros);
-    printf("TOTAL: $%0.2f\n", pVenta->dinero);
-}
-
 void Venta_fprintf(FILE* stream, Venta* pVenta)
 {
     // primero convertimos el rawtime (time_t) a algo que se pueda usar
@@ -133,7 +110,7 @@ void Venta_fprintf(FILE* stream, Venta* pVenta)
     fprintf(stream, "FACTURA N-%li\n", pVenta->factura);
     fprintf(stream, "FECHA: %s\n", buffer);
     fprintf(stream, "LIBROS:\n");
-    VentaLibro_imprimirMultiples(pVenta->pLibros);
+    VentaLibro_fprintfMulti(stream, pVenta->pLibros);
     fprintf(stream, "TOTAL: $%0.2f\n", pVenta->dinero);
 }
 
@@ -178,15 +155,49 @@ bool VentaLibro_has(VentaLibro* pVentaLibro, int isbn)
 
 static void _generarArchFactura(Venta* pVenta)
 {
-//    char fname[256];
-//    memset(fname, '\0', 256);
-//
-//    struct tm* timeinfo;
-//    char buffer[256];
-//    timeinfo = localtime(&pVenta->fecha);
-//    strftime(buffer, 256, "fact_%Y-%m-d-%H-%M-%S", timeinfo);
-//    FILE* pFile = fopen("w");
-//    fputs();
+    // declaramos una cadena donde meteremos el nombre del archivo
+    char fname[400];
+    memset(fname, '\0', 400);
+    strcat(fname, CARPETA);
+    strcat(fname, "/");
+
+    // declaramos un puntero a char y lo movemos al final de la cadena para el nombre del archivo
+    char* pChar = fname;
+    int c = 0;
+    while ((*pChar) != '\0')
+    {
+        pChar++;
+        c++;
+    }
+
+    // metemos la fecha en el nombre del archivo
+    struct tm* timeinfo;
+    timeinfo = localtime(&pVenta->fecha);
+    strftime(pChar, 400 - c, "fact%Y%m%d%H%M%S", timeinfo);
+
+    // movemos el puntero al final de la cadena para el nombre del archivo
+    pChar = fname;
+    while ((*pChar) != '\0'&& (*(pChar + 1)) != '\0')
+    {
+        pChar++;
+    }
+
+    // en el final de la cadena, agregamos el numero de factura y la extension del archivo
+    sprintf(pChar, "%-li.txt", pVenta->factura);
+
+    // abrimos el archivo, imprimimos y cerramos
+    FILE* pFile = fopen(fname, "w");
+    Venta_fprintf(pFile, pVenta);
+    fclose(pFile);
+}
+
+static void _procesarVentaLibros(VentaLibro* pLibros)
+{
+    while(pLibros != NULL)
+    {
+        archLibrosReservarUno(pLibros->isbn);
+        pLibros = pLibros->pSig;
+    }
 }
 
 void menuVenta(Venta** ppVentasDomicilio, Venta** ppVentasSucursal)
@@ -242,17 +253,18 @@ void menuVenta(Venta** ppVentasDomicilio, Venta** ppVentasSucursal)
     {
         // al finalizar el ingreso, mostrar resumen y pedir confirmacion
         printf("\nRESUMEN DE VENTA\n");
-        VentaLibro_imprimirMultiples(pLibrosAVender);
+        VentaLibro_fprintfMulti(stdout, pLibrosAVender);
         printf("TOTAL: $%0.2f\n", VentaLibro_costoTotal(pLibrosAVender));
 
         int confirmacion = 0;
-        printf("\nCONFIRMAR (1 = Si, X = No): ");
+        printf("\nCONFIRMAR (1 = Si, Otro numero = No): ");
         scanf("%i", &confirmacion);
         if (confirmacion == 1)
         {
             printf("- Venta confirmada.\n");
-            printf("\nTIPO DE ENTREGA (1 = Envio a domicilio | X = Retiro por sucursal): ");
+            printf("\nTIPO DE ENTREGA (1 = Envio a domicilio | Otro numero = Retiro por sucursal): ");
             scanf("%i", &confirmacion);
+            // generar factura.txt e incrementar en uno el stock reservado para cada libro
             if (confirmacion == 1)
             {
                 // ENVIO: agergar a una cola
@@ -267,7 +279,7 @@ void menuVenta(Venta** ppVentasDomicilio, Venta** ppVentasSucursal)
                 Venta_pushEnd(ppVentasSucursal, pLibrosAVender);
                 _generarArchFactura(Venta_end((*ppVentasSucursal)));
             }
-            // si se confirma, generar factura.txt e incrementar en uno el stock reservado para cada libro
+            _procesarVentaLibros(pLibrosAVender);
         }
         else
         {
